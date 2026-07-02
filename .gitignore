@@ -16,6 +16,7 @@
 # next.js
 /.next/
 /out/
+/.netlify/
 
 # production
 /build
@@ -23,6 +24,9 @@
 # misc
 .DS_Store
 *.pem
+.next-dev.pid
+tmp-chrome-profile/
+tmp-shots/
 
 # debug
 npm-debug.log*

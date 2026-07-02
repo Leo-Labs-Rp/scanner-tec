@@ -1,0 +1,50 @@
+<svg width="920" height="240" viewBox="0 0 920 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="outerRed" x1="90" y1="58" x2="730" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF3238"/>
+      <stop offset="0.42" stop-color="#E10818"/>
+      <stop offset="1" stop-color="#8E000B"/>
+    </linearGradient>
+    <linearGradient id="innerMetal" x1="147" y1="94" x2="617" y2="94" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D9DEE5"/>
+      <stop offset="0.33" stop-color="#FFFFFF"/>
+      <stop offset="0.7" stop-color="#A5AFBC"/>
+      <stop offset="1" stop-color="#F6F8FB"/>
+    </linearGradient>
+    <linearGradient id="needle" x1="447" y1="145" x2="777" y2="83" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BCC4CF"/>
+      <stop offset="0.42" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#D8DDE4"/>
+    </linearGradient>
+    <linearGradient id="scannerFill" x1="85" y1="126" x2="552" y2="182" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FAFBFD"/>
+      <stop offset="0.58" stop-color="#E7EBF1"/>
+      <stop offset="1" stop-color="#B6BFCA"/>
+    </linearGradient>
+    <linearGradient id="tecFill" x1="563" y1="127" x2="780" y2="182" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF3F46"/>
+      <stop offset="0.5" stop-color="#F10D1C"/>
+      <stop offset="1" stop-color="#A80012"/>
+    </linearGradient>
+    <filter id="softShadow" x="56" y="18" width="760" height="170" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.24"/>
+    </filter>
+    <style>
+      .scanner-word { font: italic 700 82px Arial, Helvetica, sans-serif; letter-spacing: -6px; }
+      .tec-word { font: italic 700 82px Arial, Helvetica, sans-serif; letter-spacing: -6px; }
+      .subtitle { font: 500 18px Arial, Helvetica, sans-serif; letter-spacing: 7px; }
+    </style>
+  </defs>
+
+  <g filter="url(#softShadow)">
+    <path d="M95 77C177 -9 437 -10 726 72" stroke="url(#outerRed)" stroke-width="18" stroke-linecap="round"/>
+    <path d="M151 92C256 31 434 33 615 93" stroke="url(#innerMetal)" stroke-width="11" stroke-linecap="round"/>
+    <path d="M447 145L780 83" stroke="url(#needle)" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="447" cy="145" r="14" fill="url(#needle)"/>
+  </g>
+
+  <text x="86" y="185" class="scanner-word" fill="url(#scannerFill)">Scanner</text>
+  <text x="564" y="185" class="tec-word" fill="url(#tecFill)">Tec</text>
+  <path d="M91 199H807" stroke="#D71019" stroke-width="2.2" stroke-linecap="round"/>
+  <text x="96" y="221" class="subtitle" fill="#F0F3F7">EQUIPAMENTOS AUTOMOTIVOS</text>
+</svg>
