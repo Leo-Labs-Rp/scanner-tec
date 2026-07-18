@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import ContactModal from "@/components/ContactModal";
 import ProductCard from "@/components/ProductCard";
 import QuoteCartDrawer from "@/components/QuoteCartDrawer";
@@ -164,6 +164,25 @@ export default function CatalogExplorer({
   initialUse = "todos",
   products
 }: Props) {
+  return (
+    <CatalogExplorerContent
+      key={`${initialCategory}:${initialQuery}:${initialUse || "todos"}`}
+      initialCategory={initialCategory}
+      introParagraphs={introParagraphs}
+      initialQuery={initialQuery}
+      initialUse={initialUse}
+      products={products}
+    />
+  );
+}
+
+function CatalogExplorerContent({
+  initialCategory = "todos",
+  introParagraphs = [],
+  initialQuery = "",
+  initialUse = "todos",
+  products
+}: Props) {
   const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState<ProductCategory | "todos">(initialCategory);
   const [priceRange, setPriceRange] = useState("todos");
@@ -178,18 +197,6 @@ export default function CatalogExplorer({
   const { checkout, checkoutError, isCheckingOut, resetCheckoutError } = useCheckoutFlow(
     cart.map((item) => ({ id: item.id, quantity: item.quantity }))
   );
-
-  useEffect(() => {
-    setQuery(initialQuery);
-  }, [initialQuery]);
-
-  useEffect(() => {
-    setCategory(initialCategory);
-  }, [initialCategory]);
-
-  useEffect(() => {
-    setUseFilter(initialUse || "todos");
-  }, [initialUse]);
 
   const brands = useMemo(
     () => Array.from(new Set(products.map(productBrand))).sort((a, b) => a.localeCompare(b)),

@@ -8,7 +8,6 @@ import {
   productionUrl,
   shareLogoUrl,
   transparentLogoUrl,
-  whatsappDisplayNumber,
   whatsappIntlNumber,
   youtubeUrl
 } from "@/lib/catalog";

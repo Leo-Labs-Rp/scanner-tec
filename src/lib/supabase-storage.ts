@@ -35,7 +35,7 @@ const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const storageBucket = "scannertec-assets";
 const bannerFolder = "banners";
 const productFolder = "products";
-const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/svg+xml"];
+const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
 const bucketFileSizeLimit = 10 * 1024 * 1024;
 
 function hasStorageCredentials() {
@@ -63,16 +63,14 @@ function sanitizeSegment(value: string) {
 function ensureFileExtension(file: File) {
   const lowerName = file.name.toLowerCase();
 
-  if (lowerName.endsWith(".png")) return ".png";
-  if (lowerName.endsWith(".webp")) return ".webp";
-  if (lowerName.endsWith(".svg")) return ".svg";
-  if (lowerName.endsWith(".jpeg")) return ".jpeg";
-  if (lowerName.endsWith(".jpg")) return ".jpg";
-
   if (file.type === "image/png") return ".png";
   if (file.type === "image/webp") return ".webp";
-  if (file.type === "image/svg+xml") return ".svg";
   if (file.type === "image/jpeg") return ".jpg";
+
+  if (lowerName.endsWith(".png")) return ".png";
+  if (lowerName.endsWith(".webp")) return ".webp";
+  if (lowerName.endsWith(".jpeg")) return ".jpeg";
+  if (lowerName.endsWith(".jpg")) return ".jpg";
 
   return "";
 }
@@ -196,7 +194,7 @@ export async function uploadAdminAsset(input: UploadAdminAssetInput): Promise<Up
   }
 
   if (!allowedMimeTypes.includes(input.file.type)) {
-    throw new Error("Use JPG, PNG, WEBP ou SVG para o upload.");
+    throw new Error("Use JPG, PNG ou WEBP para o upload.");
   }
 
   if (input.file.size > bucketFileSizeLimit) {

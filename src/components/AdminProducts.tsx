@@ -1126,7 +1126,7 @@ export default function AdminProducts({
                     Enviar imagem principal
                     <input
                       type="file"
-                      accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                      accept="image/png,image/jpeg,image/webp"
                       onChange={(event) => handlePrimaryProductUpload(event.target.files)}
                     />
                   </label>
@@ -1171,7 +1171,7 @@ export default function AdminProducts({
                     <input
                       type="file"
                       multiple
-                      accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                      accept="image/png,image/jpeg,image/webp"
                       onChange={(event) => handleGalleryUpload(event.target.files)}
                     />
                   </label>

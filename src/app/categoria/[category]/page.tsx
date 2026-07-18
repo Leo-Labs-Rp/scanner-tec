@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import CatalogExplorer from "@/components/CatalogExplorer";
 import { formatCategoryLabel, normalizeProductCategory, productCategories } from "@/lib/catalog";
-import { buildBreadcrumbSchema, buildCategoryMetadata, categorySeoCopy } from "@/lib/seo";
+import { buildBreadcrumbSchema, buildCategoryMetadata } from "@/lib/seo";
 import { listProducts } from "@/lib/supabase-products";
 import type { ProductCategory } from "@/types/product";
 
