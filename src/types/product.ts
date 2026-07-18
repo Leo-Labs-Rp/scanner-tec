@@ -7,6 +7,13 @@ export type Product = {
   sku?: string;
   category: ProductCategory;
   brand?: string;
+  fullName?: string;
+  commercialSummary?: string;
+  applications?: string;
+  benefits?: string[];
+  compatibility?: string;
+  priceOrCondition?: string;
+  imageAlt?: string;
   description: string;
   detail?: string;
   price: number | null;

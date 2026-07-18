@@ -1,9 +1,18 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 const labels: Record<string, string> = {
   sucesso: "Pagamento aprovado",
   erro: "Pagamento não concluído",
   pendente: "Pagamento pendente"
+};
+
+export const metadata: Metadata = {
+  title: "Status do pagamento | ScannerTec",
+  robots: {
+    index: false,
+    follow: false
+  }
 };
 
 export default async function PaymentStatusPage({

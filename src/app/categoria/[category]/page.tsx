@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import CatalogExplorer from "@/components/CatalogExplorer";
 import { formatCategoryLabel, normalizeProductCategory, productCategories } from "@/lib/catalog";
+import { buildBreadcrumbSchema, buildCategoryMetadata, categorySeoCopy } from "@/lib/seo";
 import { listProducts } from "@/lib/supabase-products";
 import type { ProductCategory } from "@/types/product";
 
@@ -17,13 +18,7 @@ export async function generateMetadata({
   params: Promise<{ category: string }>;
 }): Promise<Metadata> {
   const { category } = await params;
-  const parsedCategory = parseCategory(category);
-  const label = formatCategoryLabel(parsedCategory);
-
-  return {
-    title: `${label} | ScannerTec`,
-    description: `Catálogo ScannerTec de ${label.toLowerCase()} para oficinas, reparadores e auto centers, com orçamento pelo WhatsApp.`
-  };
+  return buildCategoryMetadata(parseCategory(category));
 }
 
 export default async function CategoryPage({
@@ -37,6 +32,22 @@ export default async function CategoryPage({
   const query = await searchParams;
   const parsedCategory = parseCategory(category);
   const products = await listProducts();
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: formatCategoryLabel(parsedCategory), url: `/categoria/${parsedCategory}` }
+  ]);
 
-  return <CatalogExplorer products={products} initialCategory={parsedCategory} initialUse={query.uso || "todos"} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <CatalogExplorer
+        products={products}
+        initialCategory={parsedCategory}
+        initialUse={query.uso || "todos"}
+      />
+    </>
+  );
 }

@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   }
 
   const mercadoPagoToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
-  const baseUrl = process.env.PUBLIC_BASE_URL || "https://scannertec.netlify.app";
+  const baseUrl = process.env.PUBLIC_BASE_URL || "https://scannertec.com";
 
   if (!mercadoPagoToken || selected.some((item) => item.price === null)) {
     return NextResponse.json({

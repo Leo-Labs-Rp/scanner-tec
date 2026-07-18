@@ -3,12 +3,20 @@ import { redirect } from "next/navigation";
 import AdminLoginForm from "@/components/AdminLoginForm";
 import { transparentLogoUrl } from "@/lib/catalog";
 import { hasAdminSession } from "@/lib/auth";
+import type { Metadata } from "next";
 
 type Props = {
   searchParams?: Promise<{ next?: string }>;
 };
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Login admin | ScannerTec",
+  robots: {
+    index: false,
+    follow: false
+  }
+};
 
 export default async function AdminLoginPage({ searchParams }: Props) {
   if (await hasAdminSession()) {

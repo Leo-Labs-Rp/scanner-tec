@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#181c22"/>
+      <stop offset="1" stop-color="#090b0e"/>
+    </linearGradient>
+    <linearGradient id="outerArc" x1="10" y1="20" x2="54" y2="20" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff3940"/>
+      <stop offset="1" stop-color="#b30012"/>
+    </linearGradient>
+    <linearGradient id="innerArc" x1="16" y1="28" x2="46" y2="20" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d7dde5"/>
+      <stop offset="0.55" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#b7c0cb"/>
+    </linearGradient>
+    <linearGradient id="needle" x1="30" y1="36" x2="52" y2="24" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dbe1e8"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bg)"/>
+  <path d="M12 28C19 16 31 11 48 16" stroke="url(#outerArc)" stroke-width="6.5" stroke-linecap="round"/>
+  <path d="M18 30C24 23 32 21 43 24" stroke="url(#innerArc)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M31 37L49 24" stroke="url(#needle)" stroke-width="3.6" stroke-linecap="round"/>
+  <circle cx="31" cy="37" r="4.2" fill="url(#needle)"/>
+  <path d="M15 48H49" stroke="#d90e19" stroke-width="2.2" stroke-linecap="round" opacity=".95"/>
+</svg>

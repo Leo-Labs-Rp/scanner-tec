@@ -1,0 +1,312 @@
+{
+  "generatedAt": "2026-07-07T00:07:06.250Z",
+  "totalAffected": 17,
+  "products": [
+    {
+      "id": "caterpillar-diagnostic-kit-cat4-scanner-de-diagnostico-construcao-2026-notebook",
+      "slug": "caterpillar-diagnostic-kit-cat4-scanner-de-diagnostico-construcao-2026-notebook",
+      "name": "CATERPILLAR DIAGNOSTIC KIT (CAT4) - Scanner de Diagnóstico Construção - 2026 + Notebook",
+      "category": "scanners",
+      "description": "CATERPILLAR DIAGNOSTIC KIT (CAT4) - Scanner de Diagnóstico Construção - 2026 + Notebook",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "CATERPILLAR DIAGNOSTIC KIT (CAT4) - Scanner de Diagnóstico Construção - 2026 + Notebook",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "chave-de-impacto-a-bateria-20v-potente-kit-com-2-baterias-e-carregador-encaixe-1-2",
+      "slug": "chave-de-impacto-a-bateria-20v-potente-kit-com-2-baterias-e-carregador-encaixe-1-2",
+      "name": "Chave de Impacto a Bateria 20V Potente - Kit com 2 Baterias e Carregador (Encaixe 1/2\")",
+      "category": "equipamentos",
+      "description": "Chave de Impacto a Bateria 20V Potente - Kit com 2 Baterias e Carregador (Encaixe 1/2\")",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Chave de Impacto a Bateria 20V Potente - Kit com 2 Baterias e Carregador (Encaixe 1/2\")",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "cnh-est-case-e-newholland-industrial-dpa5-scanner-de-diagnostico-agricola-e-construcao-2026-notebook",
+      "slug": "cnh-est-case-e-newholland-industrial-dpa5-scanner-de-diagnostico-agricola-e-construcao-2026-notebook",
+      "name": "CNH Est Case e NewHolland Industrial DPA5 - Scanner de Diagnóstico Agrícola e Construção - 2026 + Notebook",
+      "category": "scanners",
+      "description": "CNH Est Case e NewHolland Industrial DPA5 - Scanner de Diagnóstico Agrícola e Construção - 2026 + Notebook",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "CNH Est Case e NewHolland Industrial DPA5 - Scanner de Diagnóstico Agrícola e Construção - 2026 + Notebook",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "cummins-inline-6-scanner-de-diagnostico-2026-notebook",
+      "slug": "cummins-inline-6-scanner-de-diagnostico-2026-notebook",
+      "name": "Cummins Inline 6 - Scanner de Diagnóstico - 2026 + Notebook",
+      "category": "scanners",
+      "description": "Cummins Inline 6 - Scanner de Diagnóstico - 2026 + Notebook",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Cummins Inline 6 - Scanner de Diagnóstico - 2026 + Notebook",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "cummins-inline-7-scanner-de-diagnostico-2026-notebook",
+      "slug": "cummins-inline-7-scanner-de-diagnostico-2026-notebook",
+      "name": "Cummins Inline 7 - Scanner de Diagnóstico - 2026 + Notebook",
+      "category": "scanners",
+      "description": "Cummins Inline 7 - Scanner de Diagnóstico - 2026 + Notebook",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Cummins Inline 7 - Scanner de Diagnóstico - 2026 + Notebook",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "ecoblaster-40-i",
+      "slug": "ecoblaster-40-i",
+      "name": "Ecoblaster 40/I",
+      "category": "maquinas",
+      "description": "Ecoblaster 40/I",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Ecoblaster 40/I",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "planatc",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "ferramenta-de-diagnostico-daf-paccar-davie-4-2026-euro-6-notebook",
+      "slug": "ferramenta-de-diagnostico-daf-paccar-davie-4-2026-euro-6-notebook",
+      "name": "FERRAMENTA DE DIAGNÓSTICO DAF PACCAR DAVIE 4 - 2026 EURO 6 + Notebook",
+      "category": "scanners",
+      "description": "FERRAMENTA DE DIAGNÓSTICO DAF PACCAR DAVIE 4 - 2026 EURO 6 + Notebook",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "FERRAMENTA DE DIAGNÓSTICO DAF PACCAR DAVIE 4 - 2026 EURO 6 + Notebook",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "iveco-eci-udt-scanner-iveco-de-diag-2026-notebook",
+      "slug": "iveco-eci-udt-scanner-iveco-de-diag-2026-notebook",
+      "name": "IVECO ECI UDT - SCANNER IVECO DE DIAG 2026 + Notebook",
+      "category": "scanners",
+      "description": "IVECO ECI UDT - SCANNER IVECO DE DIAG 2026 + Notebook",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "IVECO ECI UDT - SCANNER IVECO DE DIAG 2026 + Notebook",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "kit-mercedes-super-mb-pro-m6-nootbook-asus-daimler",
+      "slug": "kit-mercedes-super-mb-pro-m6-nootbook-asus-daimler",
+      "name": "Kit Mercedes - Super MB Pro M6 + Nootbook Asus Daimler",
+      "category": "scanners",
+      "description": "Kit Mercedes - Super MB Pro M6 + Nootbook Asus Daimler",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Kit Mercedes - Super MB Pro M6 + Nootbook Asus Daimler",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "maquina-geradora-de-fumaca-automotiva-ij-21200",
+      "slug": "maquina-geradora-de-fumaca-automotiva-ij-21200",
+      "name": "Máquina Geradora de Fumaça Automotiva IJ-21200",
+      "category": "maquinas",
+      "description": "Máquina Geradora de Fumaça Automotiva IJ-21200",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Máquina Geradora de Fumaça Automotiva IJ-21200",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "multimec-pilot",
+      "slug": "multimec-pilot",
+      "name": "MultiMEC PILOT",
+      "category": "equipamentos",
+      "description": "MultiMEC PILOT",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "MultiMEC PILOT",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "Multimec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "osciloscopio-automotivo-new-tecnoscopio-4cw80-sb",
+      "slug": "osciloscopio-automotivo-new-tecnoscopio-4cw80-sb",
+      "name": "Osciloscópio Automotivo New Tecnoscópio 4CW80 SB",
+      "category": "equipamentos",
+      "description": "Osciloscópio Automotivo New Tecnoscópio 4CW80 SB",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Osciloscópio Automotivo New Tecnoscópio 4CW80 SB",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "rotametro-e-manometro-ij-2189-da-injetec",
+      "slug": "rotametro-e-manometro-ij-2189-da-injetec",
+      "name": "Rotâmetro e Manômetro IJ-2189 da Injetec",
+      "category": "manometros",
+      "description": "Rotâmetro e Manômetro IJ-2189 da Injetec",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Rotâmetro e Manômetro IJ-2189 da Injetec",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "Injetec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "sangrador-de-freio-pneumatico-a-vacuo-ij-21201",
+      "slug": "sangrador-de-freio-pneumatico-a-vacuo-ij-21201",
+      "name": "Sangrador de Freio Pneumático a Vácuo IJ-21201",
+      "category": "equipamentos",
+      "description": "Sangrador de Freio Pneumático a Vácuo IJ-21201",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Sangrador de Freio Pneumático a Vácuo IJ-21201",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "Injetec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "scania-vci3-notebook",
+      "slug": "scania-vci3-notebook",
+      "name": "Scania VCI3 + Notebook",
+      "category": "scanners",
+      "description": "Scania VCI3 + Notebook",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Scania VCI3 + Notebook",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "scanner-diagnostico-volks-truck-man-diagnostico-eletronico-para-veiculos-pesados-2026-notebook",
+      "slug": "scanner-diagnostico-volks-truck-man-diagnostico-eletronico-para-veiculos-pesados-2026-notebook",
+      "name": "Scanner Diagnóstico Volks Truck + Man | Diagnóstico Eletrônico para Veículos Pesados 2026 + Notebook",
+      "category": "scanners",
+      "description": "Scanner Diagnóstico Volks Truck + Man | Diagnóstico Eletrônico para Veículos Pesados 2026 + Notebook",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Scanner Diagnóstico Volks Truck + Man | Diagnóstico Eletrônico para Veículos Pesados 2026 + Notebook",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    },
+    {
+      "id": "scanner-volvo-vocom-notebook",
+      "slug": "scanner-volvo-vocom-notebook",
+      "name": "Scanner Volvo Vocom + Notebook",
+      "category": "scanners",
+      "description": "Scanner Volvo Vocom + Notebook",
+      "draft": {
+        "status": "rascunho - revisar",
+        "full_name": "Scanner Volvo Vocom + Notebook",
+        "commercial_summary": "",
+        "applications": "",
+        "benefits": [],
+        "compatibility": "",
+        "brand": "ScannerTec",
+        "price_or_condition": "Consultar condições",
+        "video_url": ""
+      }
+    }
+  ]
+}

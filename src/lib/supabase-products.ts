@@ -15,6 +15,13 @@ type DbProduct = {
   sku?: string | null;
   category: string;
   brand?: string | null;
+  full_name?: string | null;
+  commercial_summary?: string | null;
+  applications?: string | null;
+  benefits?: string[] | null;
+  compatibility?: string | null;
+  price_or_condition?: string | null;
+  image_alt?: string | null;
   description: string;
   detail?: string | null;
   price: number | null;
@@ -48,7 +55,14 @@ function normalizeProduct(product: Product): Product {
     mostViewed: product.mostViewed ?? product.featured,
     paymentInfo: product.paymentInfo || product.paymentNote || product.stockStatus,
     useTags: product.useTags || product.tags || inferTags(product.name, product.description),
-    specs: product.specs || {}
+    specs: product.specs || {},
+    fullName: product.fullName || product.name,
+    commercialSummary: product.commercialSummary || product.description,
+    applications: product.applications || product.detail || product.description,
+    benefits: product.benefits || [],
+    compatibility: product.compatibility || "",
+    priceOrCondition: product.priceOrCondition || product.paymentInfo || product.paymentNote || product.stockStatus,
+    imageAlt: product.imageAlt || ""
   });
 }
 
@@ -98,6 +112,13 @@ function toProduct(row: DbProduct): Product {
     sku: row.sku || undefined,
     category,
     brand: row.brand || inferBrand(row.name),
+    fullName: row.full_name || row.name,
+    commercialSummary: row.commercial_summary || row.description,
+    applications: row.applications || row.detail || row.description,
+    benefits: row.benefits || [],
+    compatibility: row.compatibility || undefined,
+    priceOrCondition: row.price_or_condition || row.payment_info || row.payment_note || row.stock_status,
+    imageAlt: row.image_alt || undefined,
     description: row.description,
     detail: row.detail || row.description,
     price: row.price,
@@ -133,6 +154,13 @@ function toDbProduct(input: ProductInput): DbProduct {
     sku: input.sku || undefined,
     category,
     brand: input.brand || inferBrand(input.name),
+    full_name: input.fullName || input.name,
+    commercial_summary: input.commercialSummary || input.description,
+    applications: input.applications || input.detail || input.description,
+    benefits: input.benefits || [],
+    compatibility: input.compatibility || null,
+    price_or_condition: input.priceOrCondition || input.paymentInfo || input.paymentNote || input.stockStatus,
+    image_alt: input.imageAlt || null,
     description: input.description,
     detail: input.detail || input.description,
     price: input.price,

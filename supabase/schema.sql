@@ -5,6 +5,13 @@ create table if not exists public.products (
   sku text,
   category text not null check (category in ('scanners', 'maquinas', 'manometros', 'equipamentos')),
   brand text,
+  full_name text,
+  commercial_summary text,
+  applications text,
+  benefits text[] not null default '{}',
+  compatibility text,
+  price_or_condition text,
+  image_alt text,
   description text not null,
   detail text,
   price numeric(12, 2),
@@ -27,6 +34,13 @@ create table if not exists public.products (
 );
 
 alter table public.products add column if not exists brand text;
+alter table public.products add column if not exists full_name text;
+alter table public.products add column if not exists commercial_summary text;
+alter table public.products add column if not exists applications text;
+alter table public.products add column if not exists benefits text[] not null default '{}';
+alter table public.products add column if not exists compatibility text;
+alter table public.products add column if not exists price_or_condition text;
+alter table public.products add column if not exists image_alt text;
 alter table public.products add column if not exists sku text;
 alter table public.products add column if not exists detail text;
 alter table public.products add column if not exists payment_note text;
@@ -41,6 +55,8 @@ alter table public.products add column if not exists specs jsonb not null defaul
 
 create index if not exists products_active_idx on public.products (active);
 create index if not exists products_category_idx on public.products (category);
+create index if not exists products_full_name_idx on public.products (full_name);
+create index if not exists products_commercial_summary_idx on public.products (commercial_summary);
 create index if not exists products_featured_idx on public.products (featured);
 create index if not exists products_most_viewed_idx on public.products (most_viewed);
 create index if not exists products_use_tags_idx on public.products using gin (use_tags);

@@ -62,10 +62,15 @@ export const quickUseLinks = [
 export const youtubeUrl = "https://www.youtube.com/@scannertecsolucoesautomoti6957";
 export const businessCity = "São José do Rio Preto - SP";
 export const businessHours = "Seg. a sex., 08h às 18h";
-export const whatsappDisplayNumber = "(17) 98156-1200";
-export const productionUrl = "https://scannertec.netlify.app";
+export const whatsappDisplayNumber = "(17) 98112-6458";
+export const whatsappIntlNumber = "+55 17 98112-6458";
+export const businessStreetAddress = "Av. Nívea Dulce Tedeschi Conforti, 2505 - Conforti";
+export const businessPostalCode = "15063-190";
+export const businessPriceRange = "R$ 1.000 - R$ 20.000";
+export const productionUrl = "https://scannertec.com";
 export const transparentLogoUrl = "/assets/scannertec-logo-transparent.png";
 export const shareLogoUrl = `${productionUrl}/assets/scannertec-logo.jpeg`;
+export const aboutPageUrl = "/sobre";
 
 export const menuGroups = [
   {
@@ -211,6 +216,13 @@ export function sanitizeProductCopy(product: Product): Product {
     ...product,
     sku: product.sku ? sanitizeCopy(product.sku) : product.sku,
     brand: product.brand ? sanitizeCopy(product.brand) : product.brand,
+    fullName: product.fullName ? sanitizeCopy(product.fullName) : product.fullName,
+    commercialSummary: product.commercialSummary ? sanitizeCopy(product.commercialSummary) : product.commercialSummary,
+    applications: product.applications ? sanitizeCopy(product.applications) : product.applications,
+    benefits: product.benefits?.map(sanitizeCopy),
+    compatibility: product.compatibility ? sanitizeCopy(product.compatibility) : product.compatibility,
+    priceOrCondition: product.priceOrCondition ? sanitizeCopy(product.priceOrCondition) : product.priceOrCondition,
+    imageAlt: product.imageAlt ? sanitizeCopy(product.imageAlt) : product.imageAlt,
     name: sanitizeCopy(product.name),
     description: sanitizeCopy(product.description),
     detail: product.detail ? sanitizeCopy(product.detail) : product.detail,
@@ -271,7 +283,49 @@ export function productTags(product: Product) {
 
 export function matchesProductUse(product: Product, use: string) {
   const expected = normalizeText(use).replace(/-/g, " ");
-  return productTags(product).some((tag) => normalizeText(tag).replace(/-/g, " ") === expected);
+  const directMatch = productTags(product).some((tag) => normalizeText(tag).replace(/-/g, " ") === expected);
+
+  if (directMatch) return true;
+
+  const inferredCategory = inferCategoryFromUse(use);
+  return Boolean(inferredCategory && product.category === inferredCategory);
+}
+
+export function inferCategoryFromUse(use?: string | null): ProductCategory | null {
+  if (!use) return null;
+
+  const normalized = normalizeText(use).replace(/-/g, " ").trim();
+
+  if (
+    normalized === "diagnostico" ||
+    normalized === "atualizacao" ||
+    normalized === "chaves" ||
+    normalized === "motos" ||
+    normalized === "arla 32"
+  ) {
+    return "scanners";
+  }
+
+  if (normalized === "maquinas" || normalized === "motor") {
+    return "maquinas";
+  }
+
+  if (normalized === "manometros" || normalized === "combustivel" || normalized === "arrefecimento") {
+    return "manometros";
+  }
+
+  if (
+    normalized === "bateria" ||
+    normalized === "freios" ||
+    normalized === "suspensao" ||
+    normalized === "auto center" ||
+    normalized === "elevadores" ||
+    normalized === "ferramentas"
+  ) {
+    return "equipamentos";
+  }
+
+  return null;
 }
 
 export function needsConsultation(product: Product) {
@@ -307,6 +361,10 @@ export function discountPercent(product: Product) {
 export function primaryProductActionLabel(product?: Product) {
   void product;
   return "Adicionar à lista";
+}
+
+export function whatsappCtaLabel() {
+  return "Falar no WhatsApp";
 }
 
 export function buildProductInquiryMessage(product: Product) {

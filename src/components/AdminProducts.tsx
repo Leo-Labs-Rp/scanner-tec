@@ -1,37 +1,15 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import { createBannerSlide, emptyBannerSettings, emptyProduct, formatList, parseList, parseSpecs } from "@/features/admin/form-utils";
 import { CloseIcon } from "@/components/SiteIcons";
 import { formatCategoryLabel, productCategories, transparentLogoUrl } from "@/lib/catalog";
 import { formatCurrency, slugify } from "@/lib/format";
+import { readJsonResponse } from "@/lib/http";
 import type { StorageAdminStatus } from "@/lib/supabase-storage";
 import type { Product, ProductCategory, ProductInput } from "@/types/product";
 import type { HomeBannerSettings, HomeBannerSlide } from "@/types/site-settings";
-
-const emptyProduct: ProductInput = {
-  name: "",
-  slug: "",
-  sku: "",
-  category: "scanners",
-  brand: "",
-  description: "",
-  detail: "",
-  price: null,
-  oldPrice: null,
-  imageUrl: "/assets/catalogo-secoes.jpeg",
-  images: ["/assets/catalogo-secoes.jpeg"],
-  youtubeUrl: "",
-  active: true,
-  featured: false,
-  mostViewed: false,
-  stockStatus: "Disponível sob consulta",
-  paymentNote: "Consultar condições",
-  paymentInfo: "Consultar condições",
-  tags: [],
-  useTags: [],
-  specs: {}
-};
 
 type Props = {
   initialProducts: Product[];
@@ -40,57 +18,8 @@ type Props = {
   initialStorageStatus: StorageAdminStatus;
 };
 
-type UploadTarget = "banner" | "product";
 type AdminStatusFilter = "todos" | "ativos" | "inativos" | "destaques";
-
-function createBannerSlide(id: string): HomeBannerSlide {
-  return {
-    id,
-    eyebrow: "Destaque ScannerTec",
-    title: "",
-    description: "",
-    imageUrl: "/assets/marcas-parceiras.jpeg",
-    linkedProductSlug: ""
-  };
-}
-
-const emptyBannerSettings: HomeBannerSettings = {
-  rotationMs: 4000,
-  slides: [createBannerSlide("banner-1")]
-};
-
-function parseList(value: string) {
-  return value
-    .split(/[\n,;]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function formatList(value?: string[]) {
-  return (value || []).join("\n");
-}
-
-function parseSpecs(value: string) {
-  if (!value.trim()) return {};
-
-  const parsed = JSON.parse(value) as Record<string, unknown>;
-  return Object.fromEntries(
-    Object.entries(parsed)
-      .map(([key, item]) => [key.trim(), String(item).trim()])
-      .filter(([key, item]) => key && item)
-  );
-}
-
-async function readJsonResponse(response: Response) {
-  const text = await response.text();
-  if (!text.trim()) return {};
-
-  try {
-    return JSON.parse(text) as Record<string, unknown>;
-  } catch {
-    return { message: text };
-  }
-}
+type UploadTarget = "banner" | "product";
 
 export default function AdminProducts({
   initialProducts,
@@ -168,6 +97,18 @@ export default function AdminProducts({
     }),
     [safeProducts]
   );
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (productSearch.trim()) count += 1;
+    if (productCategoryFilter !== "todos") count += 1;
+    if (productStatusFilter !== "todos") count += 1;
+    return count;
+  }, [productCategoryFilter, productSearch, productStatusFilter]);
+  const editorImageCount = useMemo(
+    () => Array.from(new Set([form.imageUrl, ...(form.images || [])].filter(Boolean))).length,
+    [form.imageUrl, form.images]
+  );
+  const editorPriceLabel = form.price === null ? "Sob consulta" : formatCurrency(form.price);
 
   useEffect(() => {
     if (typeof document === "undefined" || !productEditorOpen) return;
@@ -356,6 +297,12 @@ export default function AdminProducts({
   function closeProductEditor() {
     setProductEditorOpen(false);
     resetForm();
+  }
+
+  function clearProductFilters() {
+    setProductSearch("");
+    setProductCategoryFilter("todos");
+    setProductStatusFilter("todos");
   }
 
   async function prepareStorage() {
@@ -889,6 +836,14 @@ export default function AdminProducts({
                 <option value="destaques">Destaques</option>
               </select>
             </label>
+            <div className="admin-toolbar-actions">
+              <button className="btn btn-secondary" type="button" onClick={clearProductFilters}>
+                Limpar filtros
+              </button>
+              <span className="inline-note">
+                {activeFilterCount ? `${activeFilterCount} filtro(s) ativo(s)` : "Sem filtros ativos"}
+              </span>
+            </div>
           </div>
 
           {message ? <p className="form-message admin-products-message">{message}</p> : null}
@@ -905,16 +860,19 @@ export default function AdminProducts({
                     </span>
                   </div>
                   <span>
-                    {formatCategoryLabel(product.category)} · {product.brand || "ScannerTec"}
+                    {formatCategoryLabel(product.category)} Â· {product.brand || "ScannerTec"}
                   </span>
                   <small>
                     {product.price === null ? "Sob consulta" : formatCurrency(product.price)}
-                    {" · "}
+                    {" Â· "}
                     {product.featured ? "Destaque" : "Sem destaque"}
-                    {product.sku ? ` · SKU ${product.sku}` : ""}
+                    {product.sku ? ` Â· SKU ${product.sku}` : ""}
                   </small>
                 </div>
                 <div className="admin-item-actions">
+                  <Link href={`/produto/${product.slug}`} target="_blank" rel="noopener noreferrer">
+                    Ver no site
+                  </Link>
                   <button type="button" onClick={() => editProduct(product)}>
                     Editar
                   </button>
@@ -944,12 +902,38 @@ export default function AdminProducts({
                 <span>{editingId ? "Editando produto" : "Novo produto"}</span>
                 <h2>{editingId ? form.name || "Produto sem nome" : "Cadastrar produto"}</h2>
               </div>
-              <button type="button" onClick={closeProductEditor} aria-label="Fechar editor de produto">
-                <CloseIcon />
-              </button>
+              <div className="admin-editor-header-actions">
+                {editingId && form.slug ? (
+                  <Link className="btn btn-secondary" href={`/produto/${form.slug}`} target="_blank" rel="noopener noreferrer">
+                    Ver no site
+                  </Link>
+                ) : null}
+                <button type="button" onClick={closeProductEditor} aria-label="Fechar editor de produto">
+                  <CloseIcon />
+                </button>
+              </div>
             </header>
 
             <form className="admin-form admin-editor-form" onSubmit={submit}>
+              <section className="admin-editor-summary">
+                <article>
+                  <strong>{form.slug || "slug automático"}</strong>
+                  <span>Slug</span>
+                </article>
+                <article>
+                  <strong>{formatCategoryLabel(form.category)}</strong>
+                  <span>Categoria</span>
+                </article>
+                <article>
+                  <strong>{editorPriceLabel}</strong>
+                  <span>Preço atual</span>
+                </article>
+                <article>
+                  <strong>{editorImageCount}</strong>
+                  <span>Imagem(ns)</span>
+                </article>
+              </section>
+
               <section className="admin-form-section">
                 <div className="admin-form-section-head">
                   <strong>Base do produto</strong>
@@ -1011,6 +995,24 @@ export default function AdminProducts({
                 </div>
 
                 <label>
+                  Nome completo para página e SEO
+                  <input
+                    value={form.fullName || ""}
+                    onChange={(event) => updateField("fullName", event.target.value)}
+                    placeholder="Nome técnico/comercial completo"
+                  />
+                </label>
+
+                <label>
+                  Resumo comercial
+                  <textarea
+                    value={form.commercialSummary || ""}
+                    onChange={(event) => updateField("commercialSummary", event.target.value)}
+                    placeholder="Resumo mais forte para SEO e apresentação comercial"
+                  />
+                </label>
+
+                <label>
                   Descrição curta
                   <textarea
                     value={form.description}
@@ -1025,6 +1027,33 @@ export default function AdminProducts({
                     value={form.detail || ""}
                     onChange={(event) => updateField("detail", event.target.value)}
                     placeholder="Texto maior usado na página individual do produto."
+                  />
+                </label>
+
+                <label>
+                  Aplicações
+                  <textarea
+                    value={form.applications || ""}
+                    onChange={(event) => updateField("applications", event.target.value)}
+                    placeholder="Para quais oficinas, veículos, rotinas ou cenários este produto é indicado"
+                  />
+                </label>
+
+                <label>
+                  Compatibilidade e observações técnicas
+                  <textarea
+                    value={form.compatibility || ""}
+                    onChange={(event) => updateField("compatibility", event.target.value)}
+                    placeholder="Informações de compatibilidade, limitações e orientação técnica"
+                  />
+                </label>
+
+                <label>
+                  Benefícios e diferenciais
+                  <textarea
+                    value={formatList(form.benefits)}
+                    onChange={(event) => updateField("benefits", parseList(event.target.value))}
+                    placeholder="Um benefício por linha"
                   />
                 </label>
               </section>
@@ -1070,6 +1099,15 @@ export default function AdminProducts({
                     />
                   </label>
                 </div>
+
+                <label>
+                  Texto comercial de preço/condição
+                  <input
+                    value={form.priceOrCondition || ""}
+                    onChange={(event) => updateField("priceOrCondition", event.target.value)}
+                    placeholder="à vista, em até 10x no cartão, consulte condições..."
+                  />
+                </label>
               </section>
 
               <section className="admin-form-section">
@@ -1115,6 +1153,15 @@ export default function AdminProducts({
                     value={form.youtubeUrl || ""}
                     onChange={(event) => updateField("youtubeUrl", event.target.value)}
                     placeholder="https://www.youtube.com/watch?v=..."
+                  />
+                </label>
+
+                <label>
+                  Texto alternativo da imagem principal
+                  <input
+                    value={form.imageAlt || ""}
+                    onChange={(event) => updateField("imageAlt", event.target.value)}
+                    placeholder="Descrição objetiva da imagem para SEO e acessibilidade"
                   />
                 </label>
 
@@ -1229,3 +1276,4 @@ export default function AdminProducts({
     </main>
   );
 }
+

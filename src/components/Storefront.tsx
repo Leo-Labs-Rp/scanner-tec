@@ -5,54 +5,40 @@ import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import ContactModal from "@/components/ContactModal";
 import ProductCard from "@/components/ProductCard";
 import QuoteCartDrawer from "@/components/QuoteCartDrawer";
-import { CartIcon, ChevronLeftIcon, ChevronRightIcon, ContactIcon, YoutubeIcon } from "@/components/SiteIcons";
+import StoreHeader from "@/components/StoreHeader";
+import { ChevronLeftIcon, ChevronRightIcon } from "@/components/SiteIcons";
+import {
+  catalogPriceRanges,
+  storefrontAboutItems,
+  storefrontAdvantages,
+  storefrontCategoryOptions
+} from "@/features/catalog/config";
+import { useCheckoutFlow } from "@/hooks/useCheckoutFlow";
 import { useQuoteCart } from "@/hooks/useQuoteCart";
 import {
+  aboutPageUrl,
   businessCity,
   businessHours,
+  buildProductFloatingMessage,
   formatCategoryLabel,
   formatTagLabel,
   matchesProductUse,
-  menuGroups,
-  primaryProductActionLabel,
   productCategories,
   productBrand,
   productTags,
-  quickUseLinks,
   transparentLogoUrl,
+  whatsappCtaLabel,
   whatsappDisplayNumber,
   youtubeUrl
 } from "@/lib/catalog";
-import { whatsappDirectUrl } from "@/lib/whatsapp";
+import { whatsappDirectUrl, whatsappUrl } from "@/lib/whatsapp";
 import type { Product, ProductCategory } from "@/types/product";
 import type { HomeBannerSettings } from "@/types/site-settings";
 
-const categories: Array<{ label: string; value: ProductCategory | "todos" }> = [
-  { label: "Todos os produtos", value: "todos" },
-  ...productCategories.map((category) => ({ label: category.label, value: category.value }))
-];
-
-const priceRanges = [
-  { label: "Todos os preços", value: "todos", min: 0, max: Infinity },
-  { label: "Até R$ 1.000", value: "ate-1000", min: 0, max: 1000 },
-  { label: "R$ 1.000 a R$ 5.000", value: "1000-5000", min: 1000, max: 5000 },
-  { label: "Acima de R$ 5.000", value: "acima-5000", min: 5000, max: Infinity },
-  { label: "Sob consulta", value: "consulta", min: 0, max: 0 }
-];
-
-const aboutItems = [
-  "Scanners automotivos e equipamentos de diagnóstico",
-  "Máquinas, manômetros e soluções para oficinas",
-  "Atendimento em São José do Rio Preto e região",
-  "Suporte técnico especializado na escolha do equipamento"
-];
-
-const advantages = [
-  { title: "Atendimento consultivo", text: "Orientação para escolher o equipamento certo.", icon: "fa-solid fa-headset" },
-  { title: "Pagamento flexível", text: "Condições alinhadas conforme o orçamento.", icon: "fa-regular fa-credit-card" },
-  { title: "Entrega ou retirada", text: "Envio combinado com a equipe de vendas.", icon: "fa-solid fa-truck-fast" },
-  { title: "Suporte técnico", text: "Apoio especializado antes e depois da compra.", icon: "fa-solid fa-shield-halved" }
-];
+const categories = storefrontCategoryOptions;
+const priceRanges = catalogPriceRanges;
+const aboutItems = storefrontAboutItems;
+const advantages = storefrontAdvantages;
 
 type Props = {
   initialProducts: Product[];
@@ -87,8 +73,6 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
   const [priceRange, setPriceRange] = useState("todos");
   const [brandFilter, setBrandFilter] = useState("todos");
   const [tagFilter, setTagFilter] = useState("todos");
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [checkoutError, setCheckoutError] = useState("");
   const [contactOpen, setContactOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -98,14 +82,19 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
   const desktopFeaturedTrackRef = useRef<HTMLDivElement | null>(null);
   const mobileFeaturedTrackRef = useRef<HTMLDivElement | null>(null);
   const { addToCart, cart, removeFromCart, total, totalItems } = useQuoteCart();
+  const { checkout, checkoutError, isCheckingOut, resetCheckoutError } = useCheckoutFlow(
+    cart.map((item) => ({ id: item.id, quantity: item.quantity }))
+  );
 
-  const brandOptions = useMemo(() => {
-    return Array.from(new Set(products.map(productBrand))).sort((a, b) => a.localeCompare(b));
-  }, [products]);
+  const brandOptions = useMemo(
+    () => Array.from(new Set(products.map(productBrand))).sort((a, b) => a.localeCompare(b)),
+    [products]
+  );
 
-  const tagOptions = useMemo(() => {
-    return Array.from(new Set(products.flatMap(productTags))).sort((a, b) => a.localeCompare(b));
-  }, [products]);
+  const tagOptions = useMemo(
+    () => Array.from(new Set(products.flatMap(productTags))).sort((a, b) => a.localeCompare(b)),
+    [products]
+  );
 
   const visibleProducts = useMemo(() => {
     const selectedRange = priceRanges.find((range) => range.value === priceRange) || priceRanges[0];
@@ -190,7 +179,7 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
   }, [featuredCarouselPaused, featuredProducts.length]);
 
   function handlePrimaryAction(product: Product) {
-    setCheckoutError("");
+    resetCheckoutError();
     addToCart(product);
     setCartOpen(true);
   }
@@ -203,44 +192,6 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
   function previousSlide() {
     if (!bannerSlides.length) return;
     setSlideIndex((current) => (current - 1 + bannerSlides.length) % bannerSlides.length);
-  }
-
-  async function checkout() {
-    setCheckoutError("");
-    setIsCheckingOut(true);
-
-    try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: cart.map((item) => ({ id: item.id, quantity: item.quantity }))
-        })
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Não foi possível finalizar a solicitação.");
-      }
-
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-        return;
-      }
-
-      if (data.whatsappUrl) {
-        window.open(data.whatsappUrl, "_blank", "noopener,noreferrer");
-        return;
-      }
-
-      throw new Error("Não foi possível iniciar o próximo passo da solicitação.");
-    } catch (error) {
-      setCheckoutError(
-        error instanceof Error ? error.message : "Não foi possível finalizar a solicitação."
-      );
-    } finally {
-      setIsCheckingOut(false);
-    }
   }
 
   function renderProductShelf(
@@ -281,103 +232,26 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
   return (
     <>
       <header className="site-header">
-        <div className="info-bar">
-          <div>
-            <span className="info-location">{businessCity} · Atendimento: 08h às 18h</span>
-            <a href={whatsappDirectUrl()} target="_blank" rel="noopener noreferrer">
-              WhatsApp: {whatsappDisplayNumber}
-            </a>
-          </div>
-        </div>
-
-        <nav className="store-header" aria-label="Navegação principal">
-          <div className="store-header-main">
-            <a className="brand store-brand" href="#inicio">
-              <span className="brand-logo-wordmark">
-                <img src={transparentLogoUrl} alt="ScannerTec Equipamentos Automotivos" />
-              </span>
-            </a>
-
-            <form
-              className="header-search"
-              onSubmit={(event) => {
-                event.preventDefault();
-                window.location.href = `/buscar?q=${encodeURIComponent(search)}`;
-              }}
-            >
-              <span>Buscar produtos</span>
-              <input
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Digite o que você procura"
-              />
-              <button type="submit">Buscar</button>
-            </form>
-
-            <div className="header-actions">
-              <button type="button" onClick={() => setContactOpen(true)} aria-label="Fale conosco">
-                <span className="action-icon" aria-hidden="true">
-                  <ContactIcon />
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setCartOpen(true)}
-                aria-label={`Abrir lista de orçamento com ${totalItems} itens`}
-              >
-                <span className="action-icon" aria-hidden="true">
-                  <CartIcon />
-                </span>
-                <strong>{totalItems}</strong>
-              </button>
-              <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" aria-label="Demonstrações no YouTube">
-                <span className="action-icon youtube" aria-hidden="true">
-                  <YoutubeIcon />
-                </span>
-              </a>
-              <button
-                className="menu-toggle"
-                type="button"
-                onClick={() => setMobileMenuOpen((current) => !current)}
-                aria-label="Abrir menu"
-              >
-                <span></span>
-                <span></span>
-                <span></span>
-              </button>
-            </div>
-          </div>
-
-          <p className="header-cart-hint">
-            Monte sua lista e envie tudo de uma vez pelo WhatsApp.
-          </p>
-
-          <div className={`category-nav ${mobileMenuOpen ? "open" : ""}`} aria-label="Atalhos principais">
-            <a href="/buscar">Catálogo</a>
-            {menuGroups.map((group) => (
-              <div className="nav-group" key={group.label}>
-                <Link href={group.href}>{group.label}</Link>
-                <button
-                  type="button"
-                  onClick={() => setOpenMobileGroup((current) => (current === group.label ? "" : group.label))}
-                  aria-label={`Abrir subcategorias de ${group.label}`}
-                >
-                  {group.label}
-                </button>
-                <div className={`dropdown-menu ${openMobileGroup === group.label ? "open" : ""}`}>
-                  <Link href={group.href}>Ver todos em {group.label}</Link>
-                  {group.items.map((item) => (
-                    <Link href={`/buscar?uso=${encodeURIComponent(item.use)}`} key={item.use}>
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
-            <a href="#sobre">Sobre</a>
-          </div>
-        </nav>
+        <StoreHeader
+          aboutHref={aboutPageUrl}
+          cartItems={totalItems}
+          catalogHref="/buscar"
+          catalogLabel="Catálogo"
+          homeHref="#inicio"
+          includeAboutLink
+          mobileMenuOpen={mobileMenuOpen}
+          onContactClick={() => setContactOpen(true)}
+          onOpenCart={() => setCartOpen(true)}
+          onSearchChange={setSearch}
+          onSearchSubmit={() => {
+            const trimmedSearch = search.trim();
+            window.location.href = trimmedSearch ? `/buscar?q=${encodeURIComponent(trimmedSearch)}` : "/buscar";
+          }}
+          onToggleMobileGroup={(group) => setOpenMobileGroup((current) => (current === group ? "" : group))}
+          onToggleMobileMenu={() => setMobileMenuOpen((current) => !current)}
+          openMobileGroup={openMobileGroup}
+          searchValue={search}
+        />
 
         {currentSlide ? (
           <section
@@ -394,26 +268,43 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
                     ? formatCategoryLabel(currentSlide.linkedProduct.category)
                     : "ScannerTec")}
               </p>
-              <h1>{currentSlide.title || currentSlide.linkedProduct?.name || "ScannerTec Equipamentos Automotivos"}</h1>
+              <h1>
+                {currentSlide.title || "Scanners e equipamentos automotivos para oficina com atendimento consultivo"}
+              </h1>
               <p>
                 {currentSlide.description ||
                   currentSlide.linkedProduct?.description ||
-                  "Soluções em scanners, máquinas, manômetros e equipamentos para oficinas e reparadores."}
+                  "Linha profissional de scanners, máquinas, manômetros e equipamentos para oficinas, auto centers e reparadores."}
               </p>
               {currentSlide.linkedProduct ? (
                 <div className="banner-actions">
                   <Link className="btn btn-primary" href={`/produto/${currentSlide.linkedProduct.slug}`}>
                     Ver produto
                   </Link>
-                  <button
+                  <a
                     className="btn btn-secondary"
-                    type="button"
-                    onClick={() => handlePrimaryAction(currentSlide.linkedProduct as Product)}
+                    href={whatsappUrl(buildProductFloatingMessage(currentSlide.linkedProduct))}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    {primaryProductActionLabel(currentSlide.linkedProduct)}
-                  </button>
+                    {whatsappCtaLabel()}
+                  </a>
                 </div>
-              ) : null}
+              ) : (
+                <div className="banner-actions">
+                  <Link className="btn btn-primary" href="/buscar">
+                    Ver catálogo
+                  </Link>
+                  <a className="btn btn-secondary" href={whatsappDirectUrl()} target="_blank" rel="noopener noreferrer">
+                    {whatsappCtaLabel()}
+                  </a>
+                </div>
+              )}
+              <div className="banner-proof-strip" aria-label="Diferenciais comerciais">
+                <span>Atendimento consultivo</span>
+                <span>Envio ou retirada</span>
+                <span>Suporte para escolha</span>
+              </div>
             </div>
             {bannerSlides.length > 1 ? (
               <div className="banner-controls">
@@ -445,16 +336,7 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
           <div className="mobile-home-head">
             <p className="eyebrow">Loja ScannerTec</p>
             <h2>Produtos em destaque</h2>
-            <p>Scanners, máquinas, manômetros e equipamentos com navegação rápida para o celular.</p>
-          </div>
-
-          <div className="mobile-home-links">
-            <Link href="/buscar">Catálogo</Link>
-            {productCategories.map((category) => (
-              <Link href={category.href} key={category.value}>
-                {category.label}
-              </Link>
-            ))}
+            <p>Comece pelos principais produtos da loja e abra o catálogo completo quando quiser refinar a busca.</p>
           </div>
 
           <div
@@ -478,16 +360,8 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
           </Link>
         </section>
 
-        <section className="quick-use-section" aria-label="Atalhos de produtos">
-          {quickUseLinks.map((item) => (
-            <Link href={item.href} key={item.use}>
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </section>
-
         {renderProductShelf(
-          "Produtos em Destaque",
+          "Produtos em destaque",
           "Destaques",
           featuredProducts.slice(0, 10),
           "desktop-home-shelf",
@@ -500,8 +374,7 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
               <p className="eyebrow">Catálogo</p>
               <h2>Encontre o equipamento ideal</h2>
               <p>
-                Pesquise por nome, filtre por categoria ou faixa de preço e monte uma lista para
-                atendimento direto com o vendedor.
+                Pesquise por nome, filtre por categoria ou faixa de preço e monte uma lista para atendimento direto com o vendedor.
               </p>
             </div>
           </div>
@@ -559,12 +432,7 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
 
           <div className="catalog-grid">
             {visibleProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                showDescription
-                onPrimaryAction={handlePrimaryAction}
-              />
+              <ProductCard key={product.id} product={product} showDescription onPrimaryAction={handlePrimaryAction} />
             ))}
           </div>
 
@@ -581,14 +449,11 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
             <p className="eyebrow">Sobre a ScannerTec</p>
             <h2>Especialistas em diagnóstico e equipamentos para oficinas.</h2>
             <p>
-              A ScannerTec atua em São José do Rio Preto com uma linha completa de scanners
-              automotivos, máquinas, manômetros e equipamentos para diagnóstico eletrônico.
-              O atendimento é consultivo: a equipe ajuda o mecânico a escolher a solução certa
-              para a rotina da oficina.
+              A ScannerTec atua em São José do Rio Preto com uma linha completa de scanners automotivos, máquinas, manômetros e equipamentos para diagnóstico eletrônico. O atendimento é consultivo: a equipe ajuda o mecânico a escolher a solução certa para a rotina da oficina.
             </p>
             <div className="about-actions">
               <Link className="btn btn-primary" href="/buscar">
-                Consultar produtos
+                Ver catálogo
               </Link>
               <a className="btn btn-secondary" href={youtubeUrl} target="_blank" rel="noopener noreferrer">
                 Ver demonstrações
@@ -602,6 +467,16 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
                 <li key={item}>{item}</li>
               ))}
             </ul>
+            <div className="about-card-meta">
+              <span>
+                <strong>Atendimento</strong>
+                {businessHours}
+              </span>
+              <span>
+                <strong>Base comercial</strong>
+                {businessCity}
+              </span>
+            </div>
           </div>
         </section>
 
@@ -651,7 +526,7 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
           <button type="button" onClick={() => setContactOpen(true)}>
             Fale conosco
           </button>
-          <a href="#sobre">Sobre a ScannerTec</a>
+          <Link href={aboutPageUrl}>Sobre a ScannerTec</Link>
           <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
             Canal no YouTube
           </a>

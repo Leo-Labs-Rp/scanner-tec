@@ -1,21 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { readJsonResponse } from "@/lib/http";
 
 type Props = {
   nextPath?: string;
 };
-
-async function readJsonResponse(response: Response) {
-  const text = await response.text();
-  if (!text.trim()) return {};
-
-  try {
-    return JSON.parse(text) as Record<string, unknown>;
-  } catch {
-    return { message: text };
-  }
-}
 
 export default function AdminLoginForm({ nextPath = "/admin" }: Props) {
   const [token, setToken] = useState("");

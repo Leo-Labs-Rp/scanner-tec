@@ -8,6 +8,13 @@ type SpreadsheetField =
   | "id"
   | "slug"
   | "name"
+  | "fullName"
+  | "commercialSummary"
+  | "applications"
+  | "benefits"
+  | "compatibility"
+  | "priceOrCondition"
+  | "imageAlt"
   | "description"
   | "detail"
   | "price"
@@ -42,6 +49,13 @@ const productColumns: Array<{ header: string; field: SpreadsheetField; width: nu
   { header: "id_nao_alterar", field: "id", width: 30 },
   { header: "slug_nao_alterar", field: "slug", width: 30 },
   { header: "nome", field: "name", width: 38 },
+  { header: "nome_completo", field: "fullName", width: 42 },
+  { header: "resumo_comercial", field: "commercialSummary", width: 52 },
+  { header: "aplicacoes", field: "applications", width: 52 },
+  { header: "beneficios", field: "benefits", width: 42 },
+  { header: "compatibilidade", field: "compatibility", width: 42 },
+  { header: "preco_ou_condicao", field: "priceOrCondition", width: 28 },
+  { header: "alt_imagem_principal", field: "imageAlt", width: 52 },
   { header: "descricao", field: "description", width: 54 },
   { header: "detalhes", field: "detail", width: 62 },
   { header: "preco_novo", field: "price", width: 16 },
@@ -70,6 +84,19 @@ const headerAliases: Record<string, SpreadsheetField> = {
   nome: "name",
   produto: "name",
   titulo: "name",
+  nome_completo: "fullName",
+  nome_tecnico: "fullName",
+  resumo_comercial: "commercialSummary",
+  resumo: "commercialSummary",
+  aplicacoes: "applications",
+  aplicacao: "applications",
+  beneficios: "benefits",
+  beneficio: "benefits",
+  compatibilidade: "compatibility",
+  preco_ou_condicao: "priceOrCondition",
+  condicao_preco: "priceOrCondition",
+  alt_imagem_principal: "imageAlt",
+  alt_imagem: "imageAlt",
   descricao: "description",
   descricao_curta: "description",
   descricaocurta: "description",
@@ -209,6 +236,13 @@ function productToRow(product: Product) {
     id_nao_alterar: product.id,
     slug_nao_alterar: product.slug,
     nome: sanitizeCopy(product.name),
+    nome_completo: sanitizeCopy(product.fullName || ""),
+    resumo_comercial: sanitizeCopy(product.commercialSummary || ""),
+    aplicacoes: sanitizeCopy(product.applications || ""),
+    beneficios: formatListCell(product.benefits),
+    compatibilidade: sanitizeCopy(product.compatibility || ""),
+    preco_ou_condicao: sanitizeCopy(product.priceOrCondition || ""),
+    alt_imagem_principal: sanitizeCopy(product.imageAlt || ""),
     descricao: sanitizeCopy(product.description),
     detalhes: sanitizeCopy(product.detail || ""),
     preco_novo: product.price ?? "",
@@ -274,6 +308,10 @@ export async function buildProductsWorkbook(products: Product[]) {
   helpSheet.addRows([
     { field: "id_nao_alterar", help: "Identificador principal do produto. Evite alterar; use para atualizar o cadastro certo." },
     { field: "slug_nao_alterar", help: "Endereço do produto no site. Se preencher com acento, o sistema normaliza automaticamente." },
+    { field: "nome_completo", help: "Nome técnico/comercial mais completo para SEO e página de produto." },
+    { field: "resumo_comercial", help: "Resumo curto com proposta de valor do produto. Evite repetir apenas o nome." },
+    { field: "aplicacoes / beneficios / compatibilidade", help: "Campos estruturados para enriquecer SEO e a página do produto." },
+    { field: "alt_imagem_principal", help: "Texto alternativo descritivo da imagem principal para SEO e acessibilidade." },
     { field: "preco_novo / preco_antigo", help: "Use número, R$ 3.990,00 ou deixe vazio para Sob consulta." },
     { field: "link_youtube", help: "Cole a URL do vídeo do produto. Se ficar vazio, o botão não aparece." },
     { field: "imagem_principal", help: "Use uma URL completa, caminho /assets/... ou nome de arquivo em /assets/products." },
@@ -393,6 +431,13 @@ export function buildProductInputFromSpreadsheetRow(
     id,
     slug,
     name,
+    fullName: normalizeValue(fields.fullName) || existing?.fullName || name,
+    commercialSummary: normalizeValue(fields.commercialSummary) || existing?.commercialSummary || "",
+    applications: normalizeValue(fields.applications) || existing?.applications || "",
+    benefits: parseListCell(fields.benefits).length ? parseListCell(fields.benefits) : existing?.benefits || [],
+    compatibility: normalizeValue(fields.compatibility) || existing?.compatibility || "",
+    priceOrCondition: normalizeValue(fields.priceOrCondition) || existing?.priceOrCondition || "",
+    imageAlt: normalizeValue(fields.imageAlt) || existing?.imageAlt || "",
     sku: existing?.sku || "",
     category,
     brand: normalizeValue(fields.brand) || existing?.brand || "ScannerTec",
