@@ -10,7 +10,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin", "/admin/", "/api", "/api/", "/pagamento", "/pagamento/"]
       }
     ],
-    sitemap: absoluteUrl("/sitemap.xml"),
-    host: absoluteUrl("/")
+    sitemap: absoluteUrl("/sitemap.xml")
   };
 }
