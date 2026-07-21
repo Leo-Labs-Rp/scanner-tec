@@ -48,7 +48,7 @@ function mapCategory(category, slug) {
     return 'manometros';
   }
   const normalized = normalizeText(category);
-  if (['scanners', 'diagnostico', 'atualizacoes', 'chaves', 'diagramas'].includes(normalized)) {
+  if (['scanners', 'diagnostico', 'recalibracoes', 'chaves', 'consultas'].includes(normalized)) {
     return 'scanners';
   }
   if (['injecao', 'limpeza', 'fluidos', 'pneus', 'alinhamento'].includes(normalized)) {

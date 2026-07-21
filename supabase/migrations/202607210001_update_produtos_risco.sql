@@ -69,4 +69,11 @@ set
   updated_at = now()
 where id = 'diagrama-eletrico';
 
+update public.products
+set
+  use_tags = array['diagnóstico', 'recalibração', 'recalibracao'],
+  updated_at = now()
+where id in ('autel-ds900-bt', 'launch-x431-pro')
+  and use_tags && array['atualização', 'atualizacao'];
+
 commit;
