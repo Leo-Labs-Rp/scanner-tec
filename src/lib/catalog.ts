@@ -1,4 +1,5 @@
 ﻿import { formatCurrency, repairMojibake } from "@/lib/format";
+import { whatsappNumber } from "@/lib/whatsapp";
 import type { CartItem, Product, ProductCategory } from "@/types/product";
 
 const brandFallbacks = [
@@ -36,7 +37,7 @@ const tagLabels: Record<string, string> = {
   motos: "Linha Moto",
   chaves: "Chaves",
   "arla 32": "ARLA 32",
-  atualizacao: "Atualizações",
+  recalibracao: "Recalibrações",
   motor: "Motor",
   elevadores: "Elevadores / Rampas",
   maquinas: "Máquinas",
@@ -51,7 +52,7 @@ export const quickUseLinks = [
   { label: "Máquinas", href: "/categoria/maquinas", use: "maquinas" },
   { label: "Manômetros", href: "/categoria/manometros", use: "manometros" },
   { label: "Linha Moto", href: "/buscar?uso=motos", use: "motos" },
-  { label: "Atualizações", href: "/buscar?uso=atualizacao", use: "atualizacao" },
+  { label: "Recalibrações", href: "/buscar?uso=recalibracao", use: "recalibracao" },
   { label: "Bateria / Elétrica", href: "/buscar?uso=bateria", use: "bateria" },
   { label: "Freios", href: "/buscar?uso=freios", use: "freios" },
   { label: "Suspensão", href: "/buscar?uso=suspensao", use: "suspensao" },
@@ -62,8 +63,8 @@ export const quickUseLinks = [
 export const youtubeUrl = "https://www.youtube.com/@scannertecsolucoesautomoti6957";
 export const businessCity = "São José do Rio Preto - SP";
 export const businessHours = "Seg. a sex., 08h às 18h";
-export const whatsappDisplayNumber = "(17) 98112-6458";
-export const whatsappIntlNumber = "+55 17 98112-6458";
+export const whatsappDisplayNumber = process.env.NEXT_PUBLIC_WHATSAPP_DISPLAY_NUMBER || "WhatsApp";
+export const whatsappIntlNumber = process.env.NEXT_PUBLIC_WHATSAPP_E164 || (whatsappNumber ? "+" + whatsappNumber : "");
 export const businessStreetAddress = "Av. Nívea Dulce Tedeschi Conforti, 2505 - Conforti";
 export const businessPostalCode = "15063-190";
 export const businessPriceRange = "R$ 1.000 - R$ 20.000";
@@ -80,7 +81,7 @@ export const menuGroups = [
     items: [
       { label: "Linha Auto", use: "diagnostico" },
       { label: "Linha Moto", use: "motos" },
-      { label: "Atualizações", use: "atualizacao" }
+      { label: "Recalibrações", use: "recalibracao" }
     ]
   },
   {
@@ -127,8 +128,8 @@ const categoryAliases: Record<string, ProductCategory> = {
   scanners: "scanners",
   diagnostico: "scanners",
   diagnosticos: "scanners",
-  atualizacao: "scanners",
-  atualizacoes: "scanners",
+  recalibracao: "scanners",
+  recalibracoes: "scanners",
   chave: "scanners",
   chaves: "scanners",
   maquina: "maquinas",
@@ -164,8 +165,8 @@ export function normalizeProductCategory(value?: string | null, fallback: Produc
 const copyReplacements: Array<[RegExp, string]> = [
   [/\bdiagnostico\b/gi, "diagnóstico"],
   [/\bdiagnosticos\b/gi, "diagnósticos"],
-  [/\batualizacao\b/gi, "atualização"],
-  [/\batualizacoes\b/gi, "atualizações"],
+  [/\brecalibracao\b/gi, "recalibração"],
+  [/\brecalibracoes\b/gi, "recalibrações"],
   [/\bsuspensao\b/gi, "suspensão"],
   [/\bfuncao\b/gi, "função"],
   [/\bfuncoes\b/gi, "funções"],
@@ -248,6 +249,12 @@ export function formatTagLabel(tag: string) {
   return tagLabels[normalizedTag] || sanitizeCopy(tag);
 }
 
+function normalizeUseTag(tag: string) {
+  const normalizedTag = normalizeText(tag).replace(/-/g, " ").trim();
+  if (normalizedTag === "recalibracao" || normalizedTag === "recalibracoes") return "recalibracao";
+  return sanitizeCopy(tag);
+}
+
 export function productBrand(product: Product) {
   if (product.brand) return sanitizeCopy(product.brand);
 
@@ -256,14 +263,14 @@ export function productBrand(product: Product) {
 }
 
 export function productTags(product: Product) {
-  if (product.useTags?.length) return product.useTags.map(sanitizeCopy);
-  if (product.tags?.length) return product.tags.map(sanitizeCopy);
+  if (product.useTags?.length) return Array.from(new Set(product.useTags.map(normalizeUseTag)));
+  if (product.tags?.length) return Array.from(new Set(product.tags.map(normalizeUseTag)));
 
   const source = normalizeText(`${product.name} ${product.description}`);
   const tags = new Set<string>();
 
   if (source.includes("scanner") || source.includes("diagnostico")) tags.add("diagnostico");
-  if (source.includes("atualizacao")) tags.add("atualizacao");
+  if (source.includes("recalibracao")) tags.add("recalibracao");
   if (source.includes("maquina") || source.includes("bico") || source.includes("fumaca") || source.includes("fluido")) tags.add("maquinas");
   if (source.includes("manometro") || source.includes("compressao") || source.includes("pressao") || source.includes("cilindro")) tags.add("manometros");
   if (source.includes("combustivel")) tags.add("combustivel");
@@ -298,7 +305,7 @@ export function inferCategoryFromUse(use?: string | null): ProductCategory | nul
 
   if (
     normalized === "diagnostico" ||
-    normalized === "atualizacao" ||
+    normalized === "recalibracao" ||
     normalized === "chaves" ||
     normalized === "motos" ||
     normalized === "arla 32"

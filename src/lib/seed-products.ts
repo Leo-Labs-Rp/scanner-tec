@@ -33,7 +33,7 @@ const featuredSlugs = new Set([
 ]);
 
 const descriptionOverrides: Record<string, string> = {
-  "scanner-multimec-x3": "Scanner atualizado para rotinas de diagnóstico com leitura ágil e apoio ao reparador no dia a dia da oficina.",
+  "scanner-multimec-x3": "Scanner preparado para rotinas de diagnóstico com leitura ágil e apoio ao reparador no dia a dia da oficina.",
   "scanner-raven-pro-3-sem-tablet": "Versão sem tablet para oficinas que já possuem equipamento compatível e querem uma solução de diagnóstico mais enxuta.",
   "scanner-raven-pro-3-com-tablet": "Versão com tablet para atendimento mais prático, unindo mobilidade e leitura eletrônica em uma única solução.",
   "arla-32-dnox-tester-planatc": "Equipamento voltado ao diagnóstico de sistemas ARLA 32, ideal para análise técnica e apoio em manutenção diesel.",
@@ -43,8 +43,8 @@ const descriptionOverrides: Record<string, string> = {
   "launch-x431-pro": "Scanner profissional Launch para rotinas completas de leitura, testes e suporte aos reparos eletrônicos.",
   "autel-maxisys-ms908s3": "Plataforma avançada da Autel para oficinas que buscam recursos mais completos de diagnóstico e programação.",
   "autel-mx900": "Scanner Autel de uso profissional para leituras, testes e funções de serviço em diferentes sistemas do veículo.",
-  "atualizacao-ds808-mp208-1-ano": "Atualização de licença para manter o equipamento compatível com novos sistemas, funções e veículos suportados.",
-  "atualizacao-carga-brasil": "Atualização dedicada à linha carga, com foco em ampliar cobertura e manter o diagnóstico em dia.",
+  "recalibracao-tecnica-ds808-mp208": "Recalibração técnica para manter o equipamento compatível com novos sistemas, funções e veículos suportados.",
+  "recalibracao-carga-brasil": "Recalibração dedicada à linha carga, com foco em ampliar cobertura e manter o diagnóstico em dia.",
   "codificador-chave-chiptronic": "Solução para codificação de chaves automotivas com foco em serviços especializados e atendimento técnico.",
   "autel-km100": "Programador de chaves da Autel para rotinas de codificação, cadastro e suporte a serviços automotivos especializados.",
   "testador-de-baterias": "Ferramenta para avaliação rápida do estado da bateria, útil no diagnóstico elétrico e na triagem de oficina.",
@@ -68,7 +68,7 @@ const descriptionOverrides: Record<string, string> = {
   "raven-ecoblasting": "Equipamento de jateamento para descarbonização, indicado para processos técnicos de limpeza automotiva.",
   "kit-sincronismo": "Kit com aplicação ampla para serviços de sincronismo, pensado para atender diferentes montadoras do mercado nacional.",
   "ferramenta-comprimir-molas-multiair-raven": "Ferramenta específica para compressão de molas em aplicações Multiair, com foco em segurança e precisão.",
-  "diagrama-eletrico": "Material técnico de apoio para leitura de circuitos, análise elétrica e consulta em reparos eletrônicos.",
+  "consulta-tecnica-circuitos-eletricos-ecu": "Material técnico de apoio para leitura de circuitos, análise elétrica e consulta em reparos eletrônicos.",
   "maquina-troca-fluido-direcao-hidraulica": "Equipamento para troca de fluido da direção hidráulica com mais controle e agilidade no serviço.",
   "carregador-bateria-maxfort": "Carregador Maxfort para bateria com perfil profissional, indicado para apoio em elétrica e manutenção.",
   "maquina-troca-oleo-cambio": "Máquina para troca de óleo de câmbio, voltada a oficinas que trabalham com manutenção de transmissão.",
@@ -143,7 +143,7 @@ function mapCategory(category: string, product?: RawProduct): ProductCategory {
 
   const normalized = normalizeText(category);
 
-  if (["scanners", "diagnostico", "atualizacoes", "chaves", "diagramas"].includes(normalized)) {
+  if (["scanners", "diagnostico", "recalibracoes", "chaves", "consultas"].includes(normalized)) {
     return "scanners";
   }
 
@@ -180,7 +180,7 @@ function inferUseTags(product: RawProduct) {
   const tags = new Set<string>();
 
   if (source.includes("scanner") || source.includes("diagnostico")) tags.add("diagnostico");
-  if (source.includes("atualizacao")) tags.add("atualizacao");
+  if (source.includes("recalibracao")) tags.add("recalibracao");
   if (source.includes("bateria") || source.includes("eletric")) tags.add("bateria");
   if (source.includes("freio")) tags.add("freios");
   if (source.includes("mola") || source.includes("suspens")) tags.add("suspensao");
@@ -278,7 +278,7 @@ function buildDescription(product: RawProduct) {
   const labels: Record<string, string> = {
     scanners: "Scanner automotivo para rotina profissional de oficina.",
     diagnostico: "Linha de diagnóstico para leitura, testes e reparo automotivo.",
-    atualizacoes: "Atualização e suporte para manter o equipamento em dia.",
+    recalibracoes: "Recalibração e suporte técnico para manter o equipamento em dia.",
     chaves: "Solução para programação e serviços com chaves automotivas.",
     baterias: "Ferramenta para apoio elétrico e atendimento de bateria.",
     testes: "Item voltado para testes e verificação técnica na oficina.",
@@ -287,7 +287,7 @@ function buildDescription(product: RawProduct) {
     injecao: "Equipamento para limpeza, testes e serviços de injeção.",
     limpeza: "Equipamento para limpeza técnica e descarbonização.",
     ferramentas: "Ferramenta profissional para o dia a dia da oficina.",
-    diagramas: "Conteúdo técnico de apoio para diagnóstico eletrônico.",
+    consultas: "Conteúdo técnico de apoio para diagnóstico eletrônico.",
     fluidos: "Equipamento para troca e manutenção de fluidos automotivos.",
     pneus: "Equipamento para estrutura de auto center e borracharia.",
     alinhamento: "Equipamento para alinhamento e balanceamento.",

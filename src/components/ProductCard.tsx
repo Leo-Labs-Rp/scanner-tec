@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   discountPercent,
   formatCategoryLabel,
@@ -8,6 +9,7 @@ import {
   primaryProductActionLabel
 } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/format";
+import { shouldUseUnoptimizedImage } from "@/lib/image";
 import {
   getProductCommercialSummary,
   getProductDisplayName,
@@ -32,6 +34,7 @@ export default function ProductCard({
 }: Props) {
   const discount = discountPercent(product);
   const productName = getProductDisplayName(product);
+  const unoptimizedImage = shouldUseUnoptimizedImage(product.imageUrl);
   const cardClassName = [
     "product-card",
     compact ? "compact" : "",
@@ -44,7 +47,14 @@ export default function ProductCard({
     <article className={cardClassName}>
       <Link className="product-image" href={`/produto/${product.slug}`}>
         {discount ? <span className="discount-badge">{discount}% OFF</span> : null}
-        <img src={product.imageUrl} alt={getProductImageAlt(product)} loading="lazy" />
+        <Image
+          src={product.imageUrl}
+          alt={getProductImageAlt(product)}
+          fill
+          sizes={compact ? "(max-width: 768px) 70vw, 220px" : "(max-width: 768px) 90vw, 280px"}
+          style={{ objectFit: "contain" }}
+          unoptimized={unoptimizedImage}
+        />
       </Link>
       <div className="product-body">
         <div className="product-meta-line">

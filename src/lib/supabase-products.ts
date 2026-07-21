@@ -8,6 +8,16 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const tableName = "products";
 
+const canonicalProductSlugs: Record<string, string> = {
+  "atualizacao-carga-brasil": "recalibracao-carga-brasil",
+  "atualizacao-ds808-mp208-1-ano": "recalibracao-tecnica-ds808-mp208",
+  "diagrama-eletrico": "consulta-tecnica-circuitos-eletricos-ecu"
+};
+
+const legacyProductSlugs = Object.fromEntries(
+  Object.entries(canonicalProductSlugs).map(([legacySlug, canonicalSlug]) => [canonicalSlug, legacySlug])
+);
+
 type DbProduct = {
   id: string;
   name: string;
@@ -97,7 +107,8 @@ function dbProducts(rows: DbProduct[], includeInactive = false) {
 }
 
 function toProduct(row: DbProduct): Product {
-  const normalizedSlug = slugify(sanitizeCopy(row.slug || row.name));
+  const rawSlug = slugify(sanitizeCopy(row.slug || row.name));
+  const normalizedSlug = canonicalProductSlugs[rawSlug] || rawSlug;
   const imageUrl = normalizeProductAssetUrl(row.image_url);
   const category = inferCategory(row.category, `${row.name} ${row.description} ${normalizedSlug}`, [
     ...(row.tags || []),
@@ -198,6 +209,10 @@ function inferCategory(category: string | null | undefined, text: string, tags: 
 
   const source = normalizeSearchText(`${text} ${tags.join(" ")}`);
 
+  if (source.includes("recalibracao")) {
+    return "scanners";
+  }
+
   if (
     source.includes("manometro") ||
     source.includes("compressao") ||
@@ -233,7 +248,7 @@ function inferTags(name: string, description: string) {
     .toLowerCase();
   const tags = new Set<string>();
   if (source.includes("scanner") || source.includes("diagnostico")) tags.add("diagnostico");
-  if (source.includes("atualizacao")) tags.add("atualizacao");
+  if (source.includes("recalibracao")) tags.add("recalibracao");
   if (source.includes("bateria") || source.includes("eletric")) tags.add("bateria");
   if (source.includes("freio")) tags.add("freios");
   if (source.includes("mola") || source.includes("suspens")) tags.add("suspensao");
@@ -295,14 +310,24 @@ export async function listProducts(includeInactive = false): Promise<Product[]> 
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   const normalizedSlug = slugify(sanitizeCopy(decodeURIComponent(slug)));
+  const canonicalSlug = canonicalProductSlugs[normalizedSlug] || normalizedSlug;
+  const legacySlug = legacyProductSlugs[canonicalSlug] || canonicalSlug;
 
   if (!isSupabaseConfigured()) {
-    return fallbackProducts().find((product) => product.slug === normalizedSlug || product.id === normalizedSlug) || null;
+    return (
+      fallbackProducts().find(
+        (product) =>
+          product.slug === canonicalSlug ||
+          product.id === canonicalSlug ||
+          product.slug === legacySlug ||
+          product.id === legacySlug
+      ) || null
+    );
   }
 
   try {
     const response = await supabaseFetch(
-      `${tableName}?select=*&or=(slug.eq.${encodeURIComponent(slug)},slug.eq.${encodeURIComponent(normalizedSlug)},id.eq.${encodeURIComponent(normalizedSlug)})&active=eq.true&limit=1`
+      `${tableName}?select=*&or=(slug.eq.${encodeURIComponent(canonicalSlug)},slug.eq.${encodeURIComponent(legacySlug)},id.eq.${encodeURIComponent(canonicalSlug)},id.eq.${encodeURIComponent(legacySlug)})&active=eq.true&limit=1`
     );
     const rows = (await response.json()) as DbProduct[];
 
@@ -312,7 +337,15 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 
     return null;
   } catch {
-    return fallbackProducts(true).find((product) => product.slug === normalizedSlug || product.id === normalizedSlug) || null;
+    return (
+      fallbackProducts(true).find(
+        (product) =>
+          product.slug === canonicalSlug ||
+          product.id === canonicalSlug ||
+          product.slug === legacySlug ||
+          product.id === legacySlug
+      ) || null
+    );
   }
 }
 
@@ -344,7 +377,7 @@ export async function updateProduct(id: string, input: ProductInput): Promise<Pr
     const [created] = (await upsertResponse.json()) as DbProduct[];
 
     if (!created) {
-      throw new Error("O produto não foi encontrado para atualização e não pôde ser criado no Supabase.");
+      throw new Error("O produto não foi encontrado para alteração e não pôde ser criado no Supabase.");
     }
 
     return toProduct(created);

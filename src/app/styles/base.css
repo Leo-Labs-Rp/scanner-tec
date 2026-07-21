@@ -655,6 +655,9 @@ p {
 }
 
 .product-image {
+  position: relative;
+  display: block;
+  overflow: hidden;
   height: 208px;
   padding: 14px;
   background: linear-gradient(180deg, #ffffff, #f2f4f7);

@@ -54,7 +54,7 @@ Prioridade: alta
 
 - edição mais rápida em modal ou drawer
 - preview de imagem antes de salvar
-- feedback claro em importação e atualização
+- feedback claro em importação e alteração
 - validações melhores para slug, id, categoria e link
 - fluxo mais simples para banners e destaque de vitrine
 

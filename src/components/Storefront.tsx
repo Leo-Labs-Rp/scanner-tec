@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import ContactModal from "@/components/ContactModal";
 import ProductCard from "@/components/ProductCard";
@@ -32,6 +33,7 @@ import {
   youtubeUrl
 } from "@/lib/catalog";
 import { whatsappDirectUrl, whatsappUrl } from "@/lib/whatsapp";
+import { shouldUseUnoptimizedImage } from "@/lib/image";
 import type { Product, ProductCategory } from "@/types/product";
 import type { HomeBannerSettings } from "@/types/site-settings";
 
@@ -254,13 +256,18 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
         />
 
         {currentSlide ? (
-          <section
-            className="banner-carousel"
-            id="inicio"
-            style={{
-              backgroundImage: `linear-gradient(90deg, rgba(7, 9, 12, 0.94) 0%, rgba(7, 9, 12, 0.72) 46%, rgba(7, 9, 12, 0.28) 100%), url(${currentSlide.imageUrl})`
-            }}
-          >
+          <section className="banner-carousel" id="inicio">
+            <Image
+              className="banner-carousel-image"
+              src={currentSlide.imageUrl}
+              alt=""
+              aria-hidden="true"
+              fill
+              sizes="100vw"
+              style={{ objectFit: "cover" }}
+              fetchPriority="high"
+              unoptimized={shouldUseUnoptimizedImage(currentSlide.imageUrl)}
+            />
             <div className="banner-content">
               <p className="eyebrow">
                 {currentSlide.eyebrow ||
@@ -461,7 +468,14 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
             </div>
           </div>
           <div className="about-card">
-            <img src={transparentLogoUrl} alt="ScannerTec Equipamentos Automotivos" />
+            <Image
+              src={transparentLogoUrl}
+              alt="ScannerTec Equipamentos Automotivos"
+              width={314}
+              height={96}
+              sizes="(max-width: 768px) 70vw, 260px"
+              style={{ width: "100%", height: "auto", objectFit: "contain" }}
+            />
             <ul>
               {aboutItems.map((item) => (
                 <li key={item}>{item}</li>

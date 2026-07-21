@@ -62,7 +62,7 @@ const categoryCommercialContent: Record<
   scanners: {
     heading: "Scanners para diagnóstico automotivo com escolha mais segura",
     summary:
-      "Linha voltada para oficinas que precisam de leitura de falhas, testes, atualizações e cobertura técnica para diferentes rotinas de diagnóstico.",
+      "Linha voltada para oficinas que precisam de leitura de falhas, testes, recalibrações e cobertura técnica para diferentes rotinas de diagnóstico.",
     highlights: [
       {
         icon: "fa-solid fa-microchip",

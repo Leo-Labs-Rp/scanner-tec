@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import ContactModal from "@/components/ContactModal";
 import ProductCard from "@/components/ProductCard";
@@ -22,6 +23,7 @@ import {
   whatsappDisplayNumber
 } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/format";
+import { shouldUseUnoptimizedImage } from "@/lib/image";
 import {
   getProductApplications,
   getProductBenefits,
@@ -69,6 +71,7 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openMobileGroup, setOpenMobileGroup] = useState("");
   const [selectedImage, setSelectedImage] = useState(initialImage);
+  const selectedImageUnoptimized = shouldUseUnoptimizedImage(selectedImage);
   const { addToCart, cart, removeFromCart, total, totalItems } = useQuoteCart();
   const { checkout, checkoutError, isCheckingOut, resetCheckoutError } = useCheckoutFlow(
     cart.map((item) => ({ id: item.id, quantity: item.quantity }))
@@ -135,7 +138,17 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
 
       <section className="product-page-hero">
         <div className="product-page-media">
-          <img src={selectedImage} alt={getProductImageAlt(product)} />
+          <div className="product-page-main-image">
+            <Image
+              src={selectedImage}
+              alt={getProductImageAlt(product)}
+              fill
+              sizes="(max-width: 960px) 100vw, 46vw"
+              style={{ objectFit: "contain" }}
+              fetchPriority="high"
+              unoptimized={selectedImageUnoptimized}
+            />
+          </div>
           {productImages.length > 1 ? (
             <div className="product-gallery" aria-label="Galeria do produto">
               {productImages.map((image, index) => (
@@ -146,7 +159,15 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
                   onClick={() => setSelectedImage(image)}
                   aria-label={`Ver imagem ${index + 1}`}
                 >
-                  <img src={image} alt="" aria-hidden="true" />
+                  <Image
+                    src={image}
+                    alt=""
+                    aria-hidden="true"
+                    fill
+                    sizes="74px"
+                    style={{ objectFit: "contain" }}
+                    unoptimized={shouldUseUnoptimizedImage(image)}
+                  />
                 </button>
               ))}
             </div>

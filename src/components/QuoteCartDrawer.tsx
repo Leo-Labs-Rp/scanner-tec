@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { CloseIcon, TrashIcon } from "@/components/SiteIcons";
 import { formatCurrency } from "@/lib/format";
+import { shouldUseUnoptimizedImage } from "@/lib/image";
 import type { CartItem } from "@/types/product";
 
 type Props = {
@@ -52,7 +54,14 @@ export default function QuoteCartDrawer({
           <ul className="cart-list drawer-list">
             {cart.map((item) => (
               <li key={item.id}>
-                <img src={item.imageUrl} alt="" aria-hidden="true" />
+                <Image
+                  src={item.imageUrl}
+                  alt=""
+                  aria-hidden="true"
+                  width={56}
+                  height={56}
+                  unoptimized={shouldUseUnoptimizedImage(item.imageUrl)}
+                />
                 <span>
                   <strong>{item.name}</strong>
                   <small>

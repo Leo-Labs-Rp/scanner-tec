@@ -1,12 +1,14 @@
 ﻿"use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { createBannerSlide, emptyBannerSettings, emptyProduct, formatList, parseList, parseSpecs } from "@/features/admin/form-utils";
 import { CloseIcon } from "@/components/SiteIcons";
 import { formatCategoryLabel, productCategories, transparentLogoUrl } from "@/lib/catalog";
 import { formatCurrency, slugify } from "@/lib/format";
 import { readJsonResponse } from "@/lib/http";
+import { shouldUseUnoptimizedImage } from "@/lib/image";
 import type { StorageAdminStatus } from "@/lib/supabase-storage";
 import type { Product, ProductCategory, ProductInput } from "@/types/product";
 import type { HomeBannerSettings, HomeBannerSlide } from "@/types/site-settings";
@@ -544,7 +546,14 @@ export default function AdminProducts({
     <main className="admin-page">
       <Link className="brand compact admin-brand" href="/">
         <span className="brand-logo-wordmark">
-          <img src={transparentLogoUrl} alt="ScannerTec Equipamentos Automotivos" />
+          <Image
+            src={transparentLogoUrl}
+            alt="ScannerTec Equipamentos Automotivos"
+            width={314}
+            height={96}
+            sizes="240px"
+            style={{ width: "100%", height: "auto", objectFit: "contain" }}
+          />
         </span>
       </Link>
 
@@ -734,7 +743,7 @@ export default function AdminProducts({
                   Enviar nova imagem
                   <input
                     type="file"
-                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    accept="image/png,image/jpeg,image/webp"
                     onChange={(event) => handleBannerUpload(slide.id, event.target.files)}
                   />
                 </label>
@@ -742,7 +751,14 @@ export default function AdminProducts({
 
               {slide.imageUrl ? (
                 <div className="asset-preview">
-                  <img src={slide.imageUrl} alt={`Preview do slide ${index + 1}`} />
+                  <Image
+                    src={slide.imageUrl}
+                    alt={`Preview do slide ${index + 1}`}
+                    width={960}
+                    height={360}
+                    sizes="(max-width: 768px) 100vw, 720px"
+                    unoptimized={shouldUseUnoptimizedImage(slide.imageUrl)}
+                  />
                 </div>
               ) : null}
 
@@ -851,7 +867,13 @@ export default function AdminProducts({
           <div className="admin-list">
             {filteredProducts.map((product) => (
               <article className="admin-item" key={product.id}>
-                <img src={product.imageUrl} alt={product.name} />
+                <Image
+                  src={product.imageUrl}
+                  alt={product.name}
+                  width={88}
+                  height={72}
+                  unoptimized={shouldUseUnoptimizedImage(product.imageUrl)}
+                />
                 <div className="admin-item-copy">
                   <div className="admin-item-topline">
                     <strong>{product.name}</strong>
@@ -1134,7 +1156,14 @@ export default function AdminProducts({
 
                 {form.imageUrl ? (
                   <div className="asset-preview product">
-                    <img src={form.imageUrl} alt={form.name || "Preview do produto"} />
+                    <Image
+                      src={form.imageUrl}
+                      alt={form.name || "Preview do produto"}
+                      width={720}
+                      height={420}
+                      sizes="(max-width: 768px) 100vw, 640px"
+                      unoptimized={shouldUseUnoptimizedImage(form.imageUrl)}
+                    />
                   </div>
                 ) : null}
 
@@ -1198,7 +1227,14 @@ export default function AdminProducts({
                       type="button"
                       onClick={() => updateField("imageUrl", image)}
                     >
-                      <img src={image} alt="" aria-hidden="true" />
+                      <Image
+                        src={image}
+                        alt=""
+                        aria-hidden="true"
+                        fill
+                        sizes="120px"
+                        unoptimized={shouldUseUnoptimizedImage(image)}
+                      />
                     </button>
                   ))}
                 </div>

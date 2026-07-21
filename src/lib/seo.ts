@@ -46,7 +46,7 @@ export const categorySeoCopy: Record<ProductCategory, { title: string; descripti
       "Scanners automotivos profissionais para diagnóstico, leitura e programação com atendimento consultivo em São José do Rio Preto.",
     intro: [
       "A categoria de scanners da ScannerTec reúne equipamentos para diagnóstico automotivo, leitura de falhas, testes avançados e rotinas de oficina com mais agilidade.",
-      "Aqui você encontra soluções para linha leve, aplicações especiais e atualizações, com apoio consultivo para escolher o scanner certo para a realidade da oficina.",
+      "Aqui você encontra soluções para linha leve, aplicações especiais e recalibrações, com apoio consultivo para escolher o scanner certo para a realidade da oficina.",
       "Se você busca scanner automotivo em São José do Rio Preto, esta vitrine concentra opções profissionais com orientação de compra e atendimento direto pelo WhatsApp."
     ]
   },

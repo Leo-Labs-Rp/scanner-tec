@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { CloseIcon } from "@/components/SiteIcons";
 import {
   formatCategoryLabel,
@@ -9,6 +10,7 @@ import {
   productTags
 } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/format";
+import { shouldUseUnoptimizedImage } from "@/lib/image";
 import type { Product } from "@/types/product";
 
 type Props = {
@@ -23,6 +25,7 @@ export default function ProductQuickView({
   product
 }: Props) {
   if (!product) return null;
+  const unoptimizedImage = shouldUseUnoptimizedImage(product.imageUrl);
 
   return (
     <div className="product-modal" role="dialog" aria-modal="true" aria-label={product.name}>
@@ -32,7 +35,14 @@ export default function ProductQuickView({
           <CloseIcon />
         </button>
         <div className="detail-image">
-          <img src={product.imageUrl} alt={product.name} />
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            fill
+            sizes="(max-width: 768px) 100vw, 420px"
+            style={{ objectFit: "contain" }}
+            unoptimized={unoptimizedImage}
+          />
         </div>
         <div className="detail-copy">
           <span className="product-category">{formatCategoryLabel(product.category)}</span>

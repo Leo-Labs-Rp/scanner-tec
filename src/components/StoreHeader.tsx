@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { CartIcon, ContactIcon, YoutubeIcon } from "@/components/SiteIcons";
 import {
   businessCity,
@@ -72,7 +73,14 @@ export default function StoreHeader({
         <div className="store-header-main">
           <Link className="brand store-brand" href={homeHref}>
             <span className="brand-logo-wordmark">
-              <img src={transparentLogoUrl} alt="ScannerTec Equipamentos Automotivos" />
+              <Image
+                src={transparentLogoUrl}
+                alt="ScannerTec Equipamentos Automotivos"
+                width={314}
+                height={96}
+                sizes="(max-width: 768px) 210px, 314px"
+                style={{ width: "100%", height: "auto", objectFit: "contain", objectPosition: "left center" }}
+              />
             </span>
           </Link>
 

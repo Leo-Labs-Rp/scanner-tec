@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import AdminLoginForm from "@/components/AdminLoginForm";
 import { transparentLogoUrl } from "@/lib/catalog";
@@ -31,7 +32,14 @@ export default async function AdminLoginPage({ searchParams }: Props) {
       <section className="admin-login-shell">
         <Link className="brand admin-brand" href="/">
           <span className="brand-logo-wordmark">
-            <img src={transparentLogoUrl} alt="ScannerTec" />
+            <Image
+              src={transparentLogoUrl}
+              alt="ScannerTec"
+              width={314}
+              height={96}
+              sizes="(max-width: 768px) 220px, 314px"
+              style={{ width: "100%", height: "auto", objectFit: "contain" }}
+            />
           </span>
         </Link>
 
