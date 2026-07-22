@@ -578,6 +578,11 @@
   font-size: clamp(1.8rem, 4vw, 2.5rem);
 }
 
+.product-page-purchase {
+  display: grid;
+  gap: 12px;
+}
+
 .product-quick-specs {
   display: flex;
   flex-wrap: wrap;
@@ -1076,7 +1081,7 @@
 
 .product-page-side {
   position: sticky;
-  top: 18px;
+  top: 70px;
 }
 
 .product-summary-card {
@@ -1114,6 +1119,106 @@
 .product-summary-card .btn {
   width: 100%;
   min-height: 44px;
+}
+
+.product-summary-purchase {
+  display: grid;
+  gap: 10px;
+}
+
+.product-summary-price {
+  display: grid;
+  gap: 3px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 13px 0;
+}
+
+.product-summary-price > span {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.product-summary-price strong {
+  color: var(--white);
+  font-size: 1.5rem;
+}
+
+.product-summary-price small {
+  color: var(--muted);
+}
+
+.product-summary-whatsapp {
+  gap: 8px;
+}
+
+.product-summary-whatsapp svg {
+  width: 18px;
+  height: 18px;
+}
+
+.product-sticky-cta {
+  display: none;
+}
+
+@media (min-width: 701px) {
+  .product-page.has-desktop-sticky-cta .product-summary-purchase {
+    visibility: hidden;
+  }
+
+  .product-sticky-cta.is-desktop-visible {
+    position: fixed;
+    top: 70px;
+    right: max(16px, calc((100vw - 1180px) / 2));
+    z-index: 45;
+    width: min(340px, calc(100vw - 32px));
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(160px, 1.2fr);
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    background: rgba(13, 15, 19, 0.98);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.32);
+    padding: 12px;
+  }
+
+  .product-sticky-cta.is-desktop-visible > div {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+  }
+
+  .product-sticky-cta.is-desktop-visible > div span {
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .product-sticky-cta.is-desktop-visible > div strong {
+    overflow: hidden;
+    color: var(--white);
+    font-size: 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-sticky-cta.is-desktop-visible .btn {
+    width: 100%;
+    min-height: 46px;
+    gap: 7px;
+    padding: 0 12px;
+    font-size: 0.8rem;
+  }
+
+  .product-sticky-cta.is-desktop-visible .btn svg {
+    width: 17px;
+    height: 17px;
+  }
 }
 
 .product-related {

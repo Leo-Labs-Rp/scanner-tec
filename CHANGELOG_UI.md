@@ -38,3 +38,21 @@ Branch: `feature/pdp-restructure`
 - Uma barra sticky oferece links semânticos para Descrição, Especificações e Aplicação.
 - As seções usam `scroll-margin-top` para não ficarem escondidas atrás da barra.
 - O scroll suave respeita `prefers-reduced-motion`.
+
+## Item 6 - CTA persistente
+
+- `IntersectionObserver` detecta quando os blocos originais de preço saem da tela; há fallback passivo de `scroll`/`resize` para ambientes sem suporte à API.
+- No mobile, uma barra fixa passa a exibir preço e WhatsApp somente depois desse ponto.
+- Enquanto a barra está visível, o WhatsApp flutuante global é ocultado e a página recebe espaço inferior para evitar sobreposição.
+- No desktop, o card lateral sticky passou a incluir preço, condição comercial e CTA de WhatsApp.
+- Quando o conjunto original de preço e CTA começa a passar sob a navegação, ele é substituído por um resumo compacto fixo, inclusive sobre relacionados e rodapé.
+
+## Validação final
+
+- Rota principal validada: `/produto/maquina-bicos-injetores-planatc`.
+- Arquitetura final: galeria e compra, descrição, especificações, aplicação e compatibilidade, relacionados e CTA persistente.
+- Mobile validado em `375x812`: sem overflow horizontal, âncoras desobstruídas, textos dentro dos controles e CTAs sem sobreposição.
+- Desktop validado em `1440x900`: card lateral e continuação fixa abaixo da navegação, sem ocultar o WhatsApp flutuante global.
+- O texto completo da descrição continua no DOM por meio de `<details>`, preservando conteúdo para SEO e acessibilidade.
+- Nenhuma tabela, consulta ou schema do Supabase foi alterado nesta reestruturação.
+- `npm run build` e `npm run lint` executados sobre o resultado final.

@@ -5,16 +5,13 @@ import Image from "next/image";
 import {
   Check,
   ChevronDown,
-  CircleCheck,
   Clock3,
-  Headset,
   ListChecks,
   MapPin,
   MessageCircle,
-  Truck,
   Zap
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ContactModal from "@/components/ContactModal";
 import ProductCard from "@/components/ProductCard";
 import QuoteCartDrawer from "@/components/QuoteCartDrawer";
@@ -116,6 +113,10 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openMobileGroup, setOpenMobileGroup] = useState("");
   const [selectedImage, setSelectedImage] = useState(initialImage);
+  const [stickyCtaVisible, setStickyCtaVisible] = useState(false);
+  const [desktopStickyCtaVisible, setDesktopStickyCtaVisible] = useState(false);
+  const purchaseBlockRef = useRef<HTMLDivElement>(null);
+  const summaryPurchaseRef = useRef<HTMLDivElement>(null);
   const selectedImageUnoptimized = shouldUseUnoptimizedImage(selectedImage);
   const { addToCart, cart, removeFromCart, total, totalItems } = useQuoteCart();
   const { checkout, checkoutError, isCheckingOut, resetCheckoutError } = useCheckoutFlow(
@@ -168,6 +169,73 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
     descriptionIntro.length || parsedDetail.highlights.length || parsedDetail.functions.length || benefits.length
   );
 
+  useEffect(() => {
+    const purchaseBlock = purchaseBlockRef.current;
+    if (!purchaseBlock) return;
+
+    const updateStickyCta = () => {
+      const purchaseBlockRect = purchaseBlock.getBoundingClientRect();
+      setStickyCtaVisible(purchaseBlockRect.bottom < 0);
+    };
+
+    if (typeof IntersectionObserver === "undefined") {
+      updateStickyCta();
+      window.addEventListener("scroll", updateStickyCta, { passive: true });
+      window.addEventListener("resize", updateStickyCta);
+
+      return () => {
+        window.removeEventListener("scroll", updateStickyCta);
+        window.removeEventListener("resize", updateStickyCta);
+      };
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setStickyCtaVisible(!entry.isIntersecting && entry.boundingClientRect.bottom < 0);
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(purchaseBlock);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("pdp-sticky-cta-visible", stickyCtaVisible);
+    return () => document.body.classList.remove("pdp-sticky-cta-visible");
+  }, [stickyCtaVisible]);
+
+  useEffect(() => {
+    const summaryPurchase = summaryPurchaseRef.current;
+    if (!summaryPurchase) return;
+
+    const updateDesktopStickyCta = () => {
+      setDesktopStickyCtaVisible(summaryPurchase.getBoundingClientRect().top < 70);
+    };
+
+    if (typeof IntersectionObserver === "undefined") {
+      updateDesktopStickyCta();
+      window.addEventListener("scroll", updateDesktopStickyCta, { passive: true });
+      window.addEventListener("resize", updateDesktopStickyCta);
+
+      return () => {
+        window.removeEventListener("scroll", updateDesktopStickyCta);
+        window.removeEventListener("resize", updateDesktopStickyCta);
+      };
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const isPastStickyOffset = entry.boundingClientRect.top < 70;
+        setDesktopStickyCtaVisible(isPastStickyOffset && (!entry.isIntersecting || entry.intersectionRatio < 1));
+      },
+      { rootMargin: "-70px 0px 0px", threshold: [0, 1] }
+    );
+
+    observer.observe(summaryPurchase);
+    return () => observer.disconnect();
+  }, []);
+
   function handlePrimaryAction(item: Product) {
     resetCheckoutError();
     addToCart(item);
@@ -175,7 +243,11 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
   }
 
   return (
-    <main className="catalog-page product-page">
+    <main
+      className={`catalog-page product-page ${stickyCtaVisible ? "has-sticky-cta" : ""} ${
+        desktopStickyCtaVisible ? "has-desktop-sticky-cta" : ""
+      }`}
+    >
       <StoreHeader
         aboutHref="/sobre"
         cartItems={totalItems}
@@ -254,72 +326,59 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
             ))}
           </div>
 
-          <div className="price-row product-page-price">
-            <strong>{formatCurrency(product.price)}</strong>
-            {product.oldPrice ? <del>{formatCurrency(product.oldPrice)}</del> : null}
-          </div>
-          <span className="installment-note">{priceOrCondition}</span>
-
-          {quickSpecs.length >= 3 ? (
-            <div className="product-quick-specs" aria-label="Especificações em destaque">
-              {quickSpecs.map(([label, value]) => (
-                <span className="product-quick-spec" key={label}>
-                  <Zap aria-hidden="true" focusable="false" />
-                  <span>
-                    <strong>{label}</strong>
-                    {value}
-                  </span>
-                </span>
-              ))}
+          <div className="product-page-purchase" ref={purchaseBlockRef}>
+            <div className="price-row product-page-price">
+              <strong>{formatCurrency(product.price)}</strong>
+              {product.oldPrice ? <del>{formatCurrency(product.oldPrice)}</del> : null}
             </div>
-          ) : null}
+            <span className="installment-note">{priceOrCondition}</span>
 
-          <div className="product-service-strip" aria-label="Serviços comerciais">
-            <span>
-              <Headset className="fa-solid fa-headset" aria-hidden="true" focusable="false" />
-              Atendimento consultivo
-            </span>
-            <span>
-              <CircleCheck className="fa-solid fa-circle-check" aria-hidden="true" focusable="false" />
-              Escolha orientada
-            </span>
-            <span>
-              <Truck className="fa-solid fa-truck-fast" aria-hidden="true" focusable="false" />
-              Envio ou retirada
-            </span>
-          </div>
+            {quickSpecs.length >= 3 ? (
+              <div className="product-quick-specs" aria-label="Especificações em destaque">
+                {quickSpecs.map(([label, value]) => (
+                  <span className="product-quick-spec" key={label}>
+                    <Zap aria-hidden="true" focusable="false" />
+                    <span>
+                      <strong>{label}</strong>
+                      {value}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            ) : null}
 
-          <div className="product-page-actions">
-            <button className="btn btn-primary product-page-action-primary" type="button" onClick={() => handlePrimaryAction(product)}>
-              <ListChecks className="fa-solid fa-list-check" aria-hidden="true" focusable="false" />
-              Adicionar à lista
-            </button>
+            <div className="product-page-actions">
+              <button className="btn btn-primary product-page-action-primary" type="button" onClick={() => handlePrimaryAction(product)}>
+                <ListChecks className="fa-solid fa-list-check" aria-hidden="true" focusable="false" />
+                Adicionar à lista
+              </button>
 
-            <div className={`product-page-actions-grid ${productYoutubeUrl ? "has-video" : ""}`}>
-              <a
-                className="btn btn-secondary product-page-action-secondary"
-                href={whatsappUrl(buildProductFloatingMessage(product))}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MessageCircle className="fa-brands fa-whatsapp" aria-hidden="true" focusable="false" />
-                {whatsappCtaLabel()}
-              </a>
-
-              {productYoutubeUrl ? (
+              <div className={`product-page-actions-grid ${productYoutubeUrl ? "has-video" : ""}`}>
                 <a
-                  className="btn btn-secondary product-page-action-secondary product-page-action-video"
-                  href={productYoutubeUrl}
+                  className="btn btn-secondary product-page-action-secondary"
+                  href={whatsappUrl(buildProductFloatingMessage(product))}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Assistir vídeo do produto ${productName} no YouTube`}
                 >
-                  <span className="action-icon youtube" aria-hidden="true">
-                    <YoutubeIcon />
-                  </span>
-                  Ver vídeo do produto
+                  <MessageCircle className="fa-brands fa-whatsapp" aria-hidden="true" focusable="false" />
+                  {whatsappCtaLabel()}
                 </a>
-              ) : null}
+
+                {productYoutubeUrl ? (
+                  <a
+                    className="btn btn-secondary product-page-action-secondary product-page-action-video"
+                    href={productYoutubeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Assistir vídeo do produto ${productName} no YouTube`}
+                  >
+                    <span className="action-icon youtube" aria-hidden="true">
+                      <YoutubeIcon />
+                    </span>
+                    Ver vídeo do produto
+                  </a>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
@@ -429,6 +488,22 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
             <p>
               A equipe pode confirmar aplicação, disponibilidade, condição comercial, frete e retirada para este produto.
             </p>
+            <div className="product-summary-purchase" ref={summaryPurchaseRef}>
+              <div className="product-summary-price">
+                <span>Preço</span>
+                <strong>{formatCurrency(product.price)}</strong>
+                <small>{priceOrCondition}</small>
+              </div>
+              <a
+                className="btn btn-primary product-summary-whatsapp"
+                href={whatsappUrl(buildProductFloatingMessage(product))}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle aria-hidden="true" focusable="false" />
+                {whatsappCtaLabel()}
+              </a>
+            </div>
             <div className="product-summary-points">
               <span>
                 <MessageCircle className="fa-brands fa-whatsapp" aria-hidden="true" focusable="false" />
@@ -473,6 +548,29 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
           WhatsApp: {whatsappDisplayNumber}
         </a>
       </div>
+
+      {stickyCtaVisible || desktopStickyCtaVisible ? (
+        <aside
+          className={`product-sticky-cta ${stickyCtaVisible ? "is-mobile-visible" : ""} ${
+            desktopStickyCtaVisible ? "is-desktop-visible" : ""
+          }`}
+          aria-label="Atendimento rápido do produto"
+        >
+          <div>
+            <span>Preço</span>
+            <strong>{formatCurrency(product.price)}</strong>
+          </div>
+          <a
+            className="btn btn-primary"
+            href={whatsappUrl(buildProductFloatingMessage(product))}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <MessageCircle aria-hidden="true" focusable="false" />
+            {whatsappCtaLabel()}
+          </a>
+        </aside>
+      ) : null}
 
       <QuoteCartDrawer
         cart={cart}
