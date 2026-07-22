@@ -10,7 +10,8 @@ import {
   ListChecks,
   MapPin,
   MessageCircle,
-  Truck
+  Truck,
+  Zap
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import ContactModal from "@/components/ContactModal";
@@ -111,6 +112,7 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
   const compatibilityPreview = useMemo(() => buildReadablePreview(compatibility, 150), [compatibility]);
 
   const specEntries = Object.entries(product.specs || {}).filter(([, value]) => Boolean(value));
+  const quickSpecs = specEntries.slice(0, 5);
   const productDisplayLine =
     product.fullName && product.fullName.trim() && product.fullName.trim() !== productName
       ? product.fullName.trim()
@@ -210,6 +212,20 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
             {product.oldPrice ? <del>{formatCurrency(product.oldPrice)}</del> : null}
           </div>
           <span className="installment-note">{priceOrCondition}</span>
+
+          {quickSpecs.length >= 3 ? (
+            <div className="product-quick-specs" aria-label="Especificações em destaque">
+              {quickSpecs.map(([label, value]) => (
+                <span className="product-quick-spec" key={label}>
+                  <Zap aria-hidden="true" focusable="false" />
+                  <span>
+                    <strong>{label}</strong>
+                    {value}
+                  </span>
+                </span>
+              ))}
+            </div>
+          ) : null}
 
           <div className="product-service-strip" aria-label="Serviços comerciais">
             <span>
