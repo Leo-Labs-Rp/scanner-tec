@@ -80,6 +80,15 @@ Status: concluida.
 - Imagens locais, placeholders e banners mantem o comportamento anterior.
 - O `next.config.ts` aceita as rotas publica original e transformada sem restringir os parametros de transformacao.
 
+### Arquivos alterados
+
+- `src/lib/image.ts`: helper idempotente para montar a URL transformada e reconhecer as duas rotas publicas do Storage.
+- `next.config.ts`: autorizacao das rotas publica original e transformada no otimizador do Next.
+- `src/components/ProductCard.tsx`: origem otimizada nos cards.
+- `src/components/ProductDetailsPage.tsx`: origem otimizada na imagem principal e galeria.
+- `src/components/ProductQuickView.tsx`: origem otimizada na visualizacao rapida.
+- `src/components/QuoteCartDrawer.tsx`: origem otimizada nas miniaturas do carrinho.
+
 ### Validacao
 
 - Build de producao e TypeScript aprovados.
@@ -109,4 +118,38 @@ Essa configuracao explicita os navegadores suportados, mas nao remove fisicament
 
 ## Fase 5 - Validacao final
 
-Status: pendente.
+Status: validacao local concluida; preview remoto pendente de autenticacao.
+
+### Lighthouse mobile na build de producao
+
+| Metrica | Baseline local em desenvolvimento | Build final de producao |
+| --- | ---: | ---: |
+| Performance | 38 | 75 |
+| FCP | 4,2 s | 1,5 s |
+| LCP | 10,0 s | 4,2 s |
+| TBT | 1.180 ms | 320 ms |
+| Speed Index | 6,1 s | 4,6 s |
+| CLS | 0,015 | 0,015 |
+
+- LCP e TBT foram calculados numericamente no relatorio final; o estado de erro da categoria Performance nao ocorreu.
+- Acessibilidade: 100.
+- Praticas recomendadas: 100.
+- SEO: 100.
+- O insight de JavaScript legado nao apresentou itens.
+- O aviso de entrega de imagens ficou em aproximadamente 7 KiB e aponta somente para maior compressao do logo local. As imagens de produto do Supabase nao aparecem mais nesse aviso.
+- O CSS local do projeto, com aproximadamente 15 KiB transferidos, permanece como o unico recurso apontado no insight de bloqueio de renderizacao.
+- O processador auxiliar de trace do Lighthouse 13 ainda imprimiu `LanternError: NO_LCP`, mas o relatorio concluido nao teve `runtimeError` e registrou LCP de 4,2 s. O reteste remoto no PageSpeed continua necessario para separar esse aviso interno do Lighthouse local do comportamento da infraestrutura Netlify.
+
+### Build e verificacao visual
+
+- `npm run build`: aprovado.
+- `npm run lint`: aprovado.
+- Home e produto validados em 390 x 844 e 1440 x 900 pixels.
+- Header, icones, cards, filtros, WhatsApp, carrinho e footer conferidos sem erros de console, imagens visiveis quebradas, sobreposicao ou overflow horizontal.
+- Evidencias: `artifacts/performance/baseline-mobile.png` e `artifacts/performance/phase2-mobile.png`.
+
+### Preview Netlify
+
+- O repositorio local possui `netlify.toml`, mas nao possui `.netlify/state.json` nem Netlify CLI vinculada ao site.
+- A branch esta pronta localmente, mas o token atual do GitHub CLI esta invalido. E necessario executar `gh auth login -h github.com` antes do push e da abertura do PR.
+- Depois do push, a URL de branch preview dependera da integracao Git/Netlify configurada no painel. Nenhum deploy de producao ou merge em `main` foi realizado.
