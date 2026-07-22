@@ -43,7 +43,8 @@ import {
   getProductCompatibility,
   getProductDisplayName,
   getProductImageAlt,
-  getProductPriceOrCondition
+  getProductPriceOrCondition,
+  normalizeComparableCopy
 } from "@/lib/product-content";
 import { whatsappUrl } from "@/lib/whatsapp";
 import type { Product, ProductCategory } from "@/types/product";
@@ -57,14 +58,13 @@ type Props = {
   relatedProducts: Product[];
 };
 
-function buildReadablePreview(text: string, max = 170) {
+function buildSentencePreview(text: string, maxSentences = 2, max = 420) {
   const normalized = text.replace(/\s+/g, " ").trim();
-  if (normalized.length <= max) return normalized;
+  const sentences = normalized.match(/[^.!?]+[.!?]+|[^.!?]+$/g)?.map((sentence) => sentence.trim()) || [];
+  const preview = sentences.slice(0, maxSentences).join(" ") || normalized;
+  if (preview.length <= max) return preview;
 
-  const firstSentence = normalized.match(/^.*?[.!?](\s|$)/)?.[0]?.trim();
-  if (firstSentence && firstSentence.length <= max) return firstSentence;
-
-  return `${normalized.slice(0, max - 3).trimEnd()}...`;
+  return `${preview.slice(0, max - 3).trimEnd()}...`;
 }
 
 const specLabelAliases: Record<string, string> = {
@@ -126,9 +126,12 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
     () => parseProductDetailContent(product.detail || product.description),
     [product.description, product.detail]
   );
-
-  const applicationPreview = useMemo(() => buildReadablePreview(applications), [applications]);
-  const compatibilityPreview = useMemo(() => buildReadablePreview(compatibility, 150), [compatibility]);
+  const parsedApplications = useMemo(() => parseProductDetailContent(applications), [applications]);
+  const applicationSource = parsedApplications.intro.join(" ") || applications;
+  const applicationText = buildSentencePreview(applicationSource);
+  const compatibilityText = buildSentencePreview(compatibility, 1, 240);
+  const applicationsDuplicateDetail =
+    normalizeComparableCopy(applications) === normalizeComparableCopy(product.detail || product.description);
 
   const sourceSpecEntries = Object.entries(product.specs || {}).filter(([, value]) => Boolean(value));
   const findSourceSpec = (label: string) =>
@@ -155,7 +158,12 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
     product.fullName && product.fullName.trim() && product.fullName.trim() !== productName
       ? product.fullName.trim()
       : "";
-  const descriptionIntro = parsedDetail.intro.filter((paragraph) => paragraph !== commercialSummary);
+  const originalDescriptionIntro = parsedDetail.intro.filter((paragraph) => paragraph !== commercialSummary);
+  const combinedDescriptionIntro = originalDescriptionIntro.join(" ");
+  const descriptionWithoutApplication = applicationsDuplicateDetail
+    ? combinedDescriptionIntro.slice(applicationText.length).trim()
+    : combinedDescriptionIntro;
+  const descriptionIntro = descriptionWithoutApplication ? [descriptionWithoutApplication] : [];
   const hasCompleteDescription = Boolean(
     descriptionIntro.length || parsedDetail.highlights.length || parsedDetail.functions.length || benefits.length
   );
@@ -281,15 +289,6 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
             </span>
           </div>
 
-          <div className="product-page-facts" aria-label="Resumo rápido do produto">
-            <span>
-              <strong>Aplicação:</strong> {applicationPreview}
-            </span>
-            <span>
-              <strong>Compatibilidade:</strong> {compatibilityPreview}
-            </span>
-          </div>
-
           <div className="product-page-actions">
             <button className="btn btn-primary product-page-action-primary" type="button" onClick={() => handlePrimaryAction(product)}>
               <ListChecks className="fa-solid fa-list-check" aria-hidden="true" focusable="false" />
@@ -388,20 +387,6 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
             ) : null}
           </article>
 
-          <article className="product-content-card">
-            <h2>Aplicação e compatibilidade</h2>
-            <div className="product-text-section">
-              <div className="product-text-block">
-                <strong>Aplicações</strong>
-                <p>{applications}</p>
-              </div>
-              <div className="product-text-block">
-                <strong>Compatibilidade</strong>
-                <p>{compatibility}</p>
-              </div>
-            </div>
-          </article>
-
           <article className="product-content-card product-specifications-section" id="especificacoes">
             <h2>Especificações técnicas</h2>
             <dl className="product-specs-grid">
@@ -412,6 +397,20 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
                 </div>
               ))}
             </dl>
+          </article>
+
+          <article className="product-content-card product-application-section" id="aplicacao">
+            <h2>Aplicação e compatibilidade</h2>
+            <div className="product-application-grid">
+              <div>
+                <h3>Aplicação</h3>
+                <p>{applicationText}</p>
+              </div>
+              <div>
+                <h3>Compatibilidade</h3>
+                <p>{compatibilityText}</p>
+              </div>
+            </div>
           </article>
         </div>
 

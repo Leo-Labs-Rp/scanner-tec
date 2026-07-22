@@ -874,6 +874,11 @@
     grid-template-columns: 1fr;
   }
 
+  .product-application-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
   .product-service-strip span {
     min-height: 42px;
     padding: 8px 10px;

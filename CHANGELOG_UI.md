@@ -23,3 +23,11 @@ Branch: `feature/pdp-restructure`
 - Aliases como `Fabricante`, `Marca` e `Marca ou linha` são deduplicados na apresentação.
 - Os chips rápidos passaram a priorizar os campos técnicos específicos extraídos da ficha existente.
 - Benefícios cadastrados foram incorporados ao accordion de descrição, removendo o bloco visual separado sem descartar conteúdo.
+
+## Item 4 - Aplicação e compatibilidade compactas
+
+- A seção passou a exibir no máximo duas frases de aplicação e uma frase de compatibilidade.
+- Quando `applications` repete `detail`, as frases usadas na aplicação são retiradas da introdução expandida para não aparecerem duas vezes.
+- O restante do texto longo continua no accordion, preservando todo o conteúdo no HTML.
+- Os fatos duplicados de aplicação e compatibilidade foram removidos do hero.
+- A ordem das seções passou a ser Descrição, Especificações técnicas e Aplicação e compatibilidade.
