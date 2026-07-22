@@ -325,6 +325,14 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
         </div>
       </section>
 
+      <nav className="product-section-nav" aria-label="Conteúdo do produto">
+        <div className="product-section-nav-inner">
+          <a href="#descricao">Descrição</a>
+          <a href="#especificacoes">Especificações</a>
+          <a href="#aplicacao">Aplicação</a>
+        </div>
+      </nav>
+
       <section className="product-page-layout">
         <div className="product-page-content">
           <article className="product-content-card product-description-section" id="descricao">

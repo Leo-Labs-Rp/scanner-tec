@@ -1941,6 +1941,16 @@
     padding: 14px 0 20px;
   }
 
+  .product-section-nav-inner {
+    width: min(100% - 24px, 1180px);
+    gap: 18px;
+  }
+
+  .product-section-nav a {
+    min-height: 48px;
+    font-size: 0.8rem;
+  }
+
   .product-page-media {
     min-height: 340px;
     padding: 16px;

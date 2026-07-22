@@ -31,3 +31,10 @@ Branch: `feature/pdp-restructure`
 - O restante do texto longo continua no accordion, preservando todo o conteúdo no HTML.
 - Os fatos duplicados de aplicação e compatibilidade foram removidos do hero.
 - A ordem das seções passou a ser Descrição, Especificações técnicas e Aplicação e compatibilidade.
+
+## Item 5 - Navegação por âncoras
+
+- A navegação foi implementada após a página fechada medir 7,2 viewports no mobile e 3,4 no desktop.
+- Uma barra sticky oferece links semânticos para Descrição, Especificações e Aplicação.
+- As seções usam `scroll-margin-top` para não ficarem escondidas atrás da barra.
+- O scroll suave respeita `prefers-reduced-motion`.
