@@ -9,6 +9,11 @@
     "lint": "eslint",
     "products:audit-content": "node ./scripts/report-duplicate-product-copy.mjs"
   },
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "maintained node versions"
+  ],
   "dependencies": {
     "exceljs": "^4.4.0",
     "lucide-react": "^1.25.0",

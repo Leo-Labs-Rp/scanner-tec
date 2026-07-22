@@ -91,7 +91,21 @@ Status: concluida.
 
 ## Fase 4 - JavaScript legado
 
-Status: pendente.
+Status: concluida com limitacao documentada.
+
+### Alteracao
+
+- `package.json`: adicionada a configuracao solicitada de `browserslist` com `defaults`, exclusao do IE 11 e versoes mantidas do Node.
+
+### Resultado do build
+
+- Build de producao e TypeScript aprovados.
+- Antes e depois da configuracao: 17 chunks JavaScript, totalizando 841.148 bytes. Nao houve aumento nem reducao no bundle gerado pelo Turbopack.
+- O Next 16 continua gerando seu arquivo padrao de compatibilidade com 112.594 bytes e o marca com `nomodule`.
+- No navegador moderno, o arquivo `nomodule` nao foi executado: o global do `core-js` permaneceu ausente.
+- Home real validada em desktop com 85 cards, header, filtros, WhatsApp e footer presentes, sem erros de console, imagens visiveis quebradas ou overflow horizontal.
+
+Essa configuracao explicita os navegadores suportados, mas nao remove fisicamente o arquivo de compatibilidade produzido pelo Next. Remover ou editar artefatos internos do framework seria fragil e ficou fora do escopo seguro desta fase.
 
 ## Fase 5 - Validacao final
 
