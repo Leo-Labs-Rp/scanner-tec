@@ -1,3 +1,4 @@
+import { CreditCard, Headset, ShieldCheck, Truck } from "lucide-react";
 import { productCategories } from "@/lib/catalog";
 import type { ProductCategory } from "@/types/product";
 
@@ -23,22 +24,26 @@ export const storefrontAdvantages = [
   {
     title: "Atendimento consultivo",
     text: "Orientação para escolher o equipamento certo.",
-    icon: "fa-solid fa-headset"
+    icon: Headset,
+    iconClassName: "fa-solid fa-headset"
   },
   {
     title: "Pagamento flexível",
     text: "Condições alinhadas conforme o orçamento.",
-    icon: "fa-regular fa-credit-card"
+    icon: CreditCard,
+    iconClassName: "fa-regular fa-credit-card"
   },
   {
     title: "Entrega ou retirada",
     text: "Envio combinado com a equipe de vendas.",
-    icon: "fa-solid fa-truck-fast"
+    icon: Truck,
+    iconClassName: "fa-solid fa-truck-fast"
   },
   {
     title: "Suporte técnico",
     text: "Apoio especializado antes e depois da compra.",
-    icon: "fa-solid fa-shield-halved"
+    icon: ShieldCheck,
+    iconClassName: "fa-solid fa-shield-halved"
   }
 ] as const;
 

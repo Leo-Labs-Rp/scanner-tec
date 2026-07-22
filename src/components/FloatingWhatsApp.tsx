@@ -1,5 +1,6 @@
 "use client";
 
+import { MessageCircle } from "lucide-react";
 import { buildDefaultBudgetMessage } from "@/lib/catalog";
 import { whatsappUrl } from "@/lib/whatsapp";
 
@@ -29,7 +30,7 @@ export default function FloatingWhatsApp() {
       rel="noopener noreferrer"
       aria-label="Falar no WhatsApp"
     >
-      <i className="fa-brands fa-whatsapp" aria-hidden="true"></i>
+      <MessageCircle className="fa-brands fa-whatsapp" aria-hidden="true" focusable="false" />
       <span>Falar no WhatsApp</span>
     </a>
   );

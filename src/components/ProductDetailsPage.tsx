@@ -2,6 +2,16 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import {
+  Check,
+  CircleCheck,
+  Clock3,
+  Headset,
+  ListChecks,
+  MapPin,
+  MessageCircle,
+  Truck
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import ContactModal from "@/components/ContactModal";
 import ProductCard from "@/components/ProductCard";
@@ -197,15 +207,15 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
 
           <div className="product-service-strip" aria-label="Serviços comerciais">
             <span>
-              <i className="fa-solid fa-headset" aria-hidden="true"></i>
+              <Headset className="fa-solid fa-headset" aria-hidden="true" focusable="false" />
               Atendimento consultivo
             </span>
             <span>
-              <i className="fa-solid fa-circle-check" aria-hidden="true"></i>
+              <CircleCheck className="fa-solid fa-circle-check" aria-hidden="true" focusable="false" />
               Escolha orientada
             </span>
             <span>
-              <i className="fa-solid fa-truck-fast" aria-hidden="true"></i>
+              <Truck className="fa-solid fa-truck-fast" aria-hidden="true" focusable="false" />
               Envio ou retirada
             </span>
           </div>
@@ -221,7 +231,7 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
 
           <div className="product-page-actions">
             <button className="btn btn-primary product-page-action-primary" type="button" onClick={() => handlePrimaryAction(product)}>
-              <i className="fa-solid fa-list-check" aria-hidden="true"></i>
+              <ListChecks className="fa-solid fa-list-check" aria-hidden="true" focusable="false" />
               Adicionar à lista
             </button>
 
@@ -232,7 +242,7 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                <MessageCircle className="fa-brands fa-whatsapp" aria-hidden="true" focusable="false" />
                 {whatsappCtaLabel()}
               </a>
 
@@ -284,7 +294,7 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
             <div className="product-benefits-grid">
               {benefits.map((benefit) => (
                 <span className="product-benefit-card" key={benefit}>
-                  <i className="fa-solid fa-check" aria-hidden="true"></i>
+                  <Check className="fa-solid fa-check" aria-hidden="true" focusable="false" />
                   <span>{benefit}</span>
                 </span>
               ))}
@@ -355,15 +365,15 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
             </p>
             <div className="product-summary-points">
               <span>
-                <i className="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                <MessageCircle className="fa-brands fa-whatsapp" aria-hidden="true" focusable="false" />
                 WhatsApp: {whatsappDisplayNumber}
               </span>
               <span>
-                <i className="fa-regular fa-clock" aria-hidden="true"></i>
+                <Clock3 className="fa-regular fa-clock" aria-hidden="true" focusable="false" />
                 {businessHours}
               </span>
               <span>
-                <i className="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <MapPin className="fa-solid fa-location-dot" aria-hidden="true" focusable="false" />
                 {businessCity}
               </span>
             </div>

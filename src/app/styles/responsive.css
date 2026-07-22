@@ -434,7 +434,8 @@
     height: 30px;
   }
 
-  .action-icon i {
+  .action-icon i,
+  .action-icon svg {
     font-size: 1.2rem;
   }
 
@@ -656,7 +657,8 @@
     height: 40px;
   }
 
-  .advantage-icon i {
+  .advantage-icon i,
+  .advantage-icon svg {
     font-size: 2rem;
   }
 
@@ -1407,7 +1409,9 @@
   }
 
   .action-icon i,
-  .btn i {
+  .action-icon svg,
+  .btn i,
+  .btn svg {
     font-size: 1rem;
   }
 
@@ -1558,7 +1562,9 @@
   }
 
   .action-icon i,
-  .btn i {
+  .action-icon svg,
+  .btn i,
+  .btn svg {
     font-size: 0.95rem;
   }
 

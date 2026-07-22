@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Clock3, MapPin, MessageCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import ContactModal from "@/components/ContactModal";
 import QuoteCartDrawer from "@/components/QuoteCartDrawer";
@@ -141,15 +142,15 @@ export default function AboutPage({ products }: Props) {
             <p>Solicite orientação, disponibilidade e orçamento direto com a equipe, sem sair do fluxo do site.</p>
             <div className="product-summary-points">
               <span>
-                <i className="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                <MessageCircle className="fa-brands fa-whatsapp" aria-hidden="true" focusable="false" />
                 WhatsApp: {whatsappDisplayNumber}
               </span>
               <span>
-                <i className="fa-regular fa-clock" aria-hidden="true"></i>
+                <Clock3 className="fa-regular fa-clock" aria-hidden="true" focusable="false" />
                 {businessHours}
               </span>
               <span>
-                <i className="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <MapPin className="fa-solid fa-location-dot" aria-hidden="true" focusable="false" />
                 {businessCity}
               </span>
             </div>
@@ -162,7 +163,7 @@ export default function AboutPage({ products }: Props) {
               ))}
             </div>
             <a className="btn btn-primary" href={whatsappDirectUrl()} target="_blank" rel="noopener noreferrer">
-              <i className="fa-brands fa-whatsapp" aria-hidden="true"></i>
+              <MessageCircle className="fa-brands fa-whatsapp" aria-hidden="true" focusable="false" />
               {whatsappCtaLabel()}
             </a>
             <Link className="btn btn-secondary" href="/buscar">

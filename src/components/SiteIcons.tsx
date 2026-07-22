@@ -1,39 +1,72 @@
-import type { HTMLAttributes } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MessageCircle,
+  ShoppingCart,
+  Trash2,
+  X,
+  type LucideIcon,
+  type LucideProps
+} from "lucide-react";
 
-type IconProps = HTMLAttributes<HTMLElement>;
+type IconProps = LucideProps;
 
-function FontAwesomeIcon({
+function LocalIcon({
   className = "",
-  icon,
+  Icon,
+  legacyClassName,
+  style,
   ...props
-}: IconProps & { icon: string }) {
-  return <i className={`${icon} ${className}`.trim()} aria-hidden="true" {...props} />;
+}: IconProps & { Icon: LucideIcon; legacyClassName: string }) {
+  return (
+    <Icon
+      className={`${legacyClassName} ${className}`.trim()}
+      aria-hidden="true"
+      focusable="false"
+      style={{ width: "1em", height: "1em", ...style }}
+      {...props}
+    />
+  );
 }
 
 export function ContactIcon(props: IconProps) {
-  return <FontAwesomeIcon icon="fa-regular fa-comment-dots" {...props} />;
+  return <LocalIcon Icon={MessageCircle} legacyClassName="fa-regular fa-comment-dots" {...props} />;
 }
 
 export function CartIcon(props: IconProps) {
-  return <FontAwesomeIcon icon="fa-solid fa-cart-shopping" {...props} />;
+  return <LocalIcon Icon={ShoppingCart} legacyClassName="fa-solid fa-cart-shopping" {...props} />;
 }
 
 export function YoutubeIcon(props: IconProps) {
-  return <FontAwesomeIcon icon="fa-brands fa-youtube" {...props} />;
+  const { className = "", style, ...svgProps } = props;
+
+  return (
+    <svg
+      className={`fa-brands fa-youtube ${className}`.trim()}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+      style={{ width: "1em", height: "1em", ...style }}
+      {...svgProps}
+    >
+      <rect x="2" y="5" width="20" height="14" rx="4" fill="currentColor" stroke="none" />
+      <path d="m10 9 5 3-5 3Z" fill="#fff" stroke="none" />
+    </svg>
+  );
 }
 
 export function ChevronLeftIcon(props: IconProps) {
-  return <FontAwesomeIcon icon="fa-solid fa-chevron-left" {...props} />;
+  return <LocalIcon Icon={ChevronLeft} legacyClassName="fa-solid fa-chevron-left" {...props} />;
 }
 
 export function ChevronRightIcon(props: IconProps) {
-  return <FontAwesomeIcon icon="fa-solid fa-chevron-right" {...props} />;
+  return <LocalIcon Icon={ChevronRight} legacyClassName="fa-solid fa-chevron-right" {...props} />;
 }
 
 export function CloseIcon(props: IconProps) {
-  return <FontAwesomeIcon icon="fa-solid fa-xmark" {...props} />;
+  return <LocalIcon Icon={X} legacyClassName="fa-solid fa-xmark" {...props} />;
 }
 
 export function TrashIcon(props: IconProps) {
-  return <FontAwesomeIcon icon="fa-regular fa-trash-can" {...props} />;
+  return <LocalIcon Icon={Trash2} legacyClassName="fa-regular fa-trash-can" {...props} />;
 }

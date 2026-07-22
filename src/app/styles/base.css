@@ -391,7 +391,9 @@ p {
 }
 
 .action-icon i,
-.btn i {
+.action-icon svg,
+.btn i,
+.btn svg {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -399,7 +401,8 @@ p {
   line-height: 1;
 }
 
-.action-icon.youtube i {
+.action-icon.youtube i,
+.action-icon.youtube svg {
   color: var(--red);
 }
 

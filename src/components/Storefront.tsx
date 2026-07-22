@@ -500,10 +500,10 @@ export default function Storefront({ initialProducts, initialBannerSettings }: P
             <p>Um atendimento pensado para oficina, auto center e reparador.</p>
           </div>
           <div className="advantages-grid">
-            {advantages.map((item) => (
+            {advantages.map(({ icon: Icon, iconClassName, ...item }) => (
               <article key={item.title}>
                 <span className="advantage-icon" aria-hidden="true">
-                  <i className={item.icon}></i>
+                  <Icon className={iconClassName} aria-hidden="true" focusable="false" />
                 </span>
                 <strong>{item.title}</strong>
                 <p>{item.text}</p>

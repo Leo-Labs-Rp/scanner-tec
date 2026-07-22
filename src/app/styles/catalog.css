@@ -655,7 +655,8 @@
   height: 22px;
 }
 
-.product-page-action-video .youtube i {
+.product-page-action-video .youtube i,
+.product-page-action-video .youtube svg {
   color: #ff2f3d;
 }
 
@@ -694,7 +695,8 @@
   line-height: 1.2;
 }
 
-.product-service-strip i {
+.product-service-strip i,
+.product-service-strip svg {
   flex: 0 0 auto;
   color: var(--red);
   font-size: 1.2rem;
@@ -809,7 +811,8 @@
   padding: 14px;
 }
 
-.product-benefit-card i {
+.product-benefit-card i,
+.product-benefit-card svg {
   color: var(--red);
   font-size: 1rem;
   margin-top: 2px;
@@ -881,7 +884,8 @@
   border-radius: 8px;
 }
 
-.product-summary-points i {
+.product-summary-points i,
+.product-summary-points svg {
   color: var(--red);
   font-size: 1.2rem;
 }
@@ -1242,7 +1246,8 @@
   padding: 16px 18px;
 }
 
-.catalog-commercial-card i {
+.catalog-commercial-card i,
+.catalog-commercial-card svg {
   color: var(--red);
   font-size: 1.1rem;
 }

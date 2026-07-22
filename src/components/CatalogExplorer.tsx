@@ -1,6 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import {
+  Boxes,
+  CarFront,
+  CircleCheck,
+  Gauge,
+  Handshake,
+  Headset,
+  Layers3,
+  MessageCircle,
+  MessagesSquare,
+  Microchip,
+  Settings,
+  SlidersHorizontal,
+  TrendingUp,
+  Truck,
+  Warehouse,
+  Wrench,
+  type LucideIcon
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import ContactModal from "@/components/ContactModal";
 import ProductCard from "@/components/ProductCard";
@@ -34,7 +53,7 @@ const categoryCommercialContent: Record<
   {
     heading: string;
     summary: string;
-    highlights: Array<{ icon: string; title: string; text: string }>;
+    highlights: Array<{ icon: LucideIcon; iconClassName: string; title: string; text: string }>;
   }
 > = {
   todos: {
@@ -43,17 +62,20 @@ const categoryCommercialContent: Record<
       "Navegue por scanners, máquinas, manômetros e equipamentos com filtros rápidos para comparar as opções certas e montar o pedido com mais segurança.",
     highlights: [
       {
-        icon: "fa-solid fa-layer-group",
+        icon: Layers3,
+        iconClassName: "fa-solid fa-layer-group",
         title: "Linhas organizadas",
         text: "Categorias pensadas para facilitar busca, comparação e envio da lista."
       },
       {
-        icon: "fa-solid fa-headset",
+        icon: Headset,
+        iconClassName: "fa-solid fa-headset",
         title: "Atendimento consultivo",
         text: "A equipe ajuda a validar a aplicação antes de fechar o orçamento."
       },
       {
-        icon: "fa-solid fa-boxes-stacked",
+        icon: Boxes,
+        iconClassName: "fa-solid fa-boxes-stacked",
         title: "Mix profissional",
         text: "Produtos para diagnóstico, testes, estrutura de oficina e apoio técnico."
       }
@@ -65,17 +87,20 @@ const categoryCommercialContent: Record<
       "Linha voltada para oficinas que precisam de leitura de falhas, testes, recalibrações e cobertura técnica para diferentes rotinas de diagnóstico.",
     highlights: [
       {
-        icon: "fa-solid fa-microchip",
+        icon: Microchip,
+        iconClassName: "fa-solid fa-microchip",
         title: "Diagnóstico rápido",
         text: "Equipamentos voltados para leitura, análise e produtividade no atendimento."
       },
       {
-        icon: "fa-solid fa-car-side",
+        icon: CarFront,
+        iconClassName: "fa-solid fa-car-side",
         title: "Aplicações variadas",
         text: "Opções para linha leve, usos específicos e cenários de oficina."
       },
       {
-        icon: "fa-solid fa-comments",
+        icon: MessagesSquare,
+        iconClassName: "fa-solid fa-comments",
         title: "Escolha orientada",
         text: "Compare modelos e confirme com a equipe a melhor opção para sua rotina."
       }
@@ -87,17 +112,20 @@ const categoryCommercialContent: Record<
       "Seleção para limpeza, fluidos, testes e rotinas técnicas que pedem equipamento confiável e fácil de aplicar no dia a dia da oficina.",
     highlights: [
       {
-        icon: "fa-solid fa-gears",
+        icon: Settings,
+        iconClassName: "fa-solid fa-gears",
         title: "Rotina operacional",
         text: "Máquinas voltadas para acelerar processos e ampliar capacidade de serviço."
       },
       {
-        icon: "fa-solid fa-screwdriver-wrench",
+        icon: Wrench,
+        iconClassName: "fa-solid fa-screwdriver-wrench",
         title: "Uso profissional",
         text: "Soluções pensadas para oficina, reparador e auto center."
       },
       {
-        icon: "fa-solid fa-truck-fast",
+        icon: Truck,
+        iconClassName: "fa-solid fa-truck-fast",
         title: "Negociação direta",
         text: "Avalie disponibilidade, entrega e retirada conforme a necessidade."
       }
@@ -109,17 +137,20 @@ const categoryCommercialContent: Record<
       "Ferramentas e kits para pressão, compressão e validações técnicas, ideais para oficinas que precisam de medições mais precisas.",
     highlights: [
       {
-        icon: "fa-solid fa-gauge-high",
+        icon: Gauge,
+        iconClassName: "fa-solid fa-gauge-high",
         title: "Medição técnica",
         text: "Produtos voltados para checagens, testes e validações de sistema."
       },
       {
-        icon: "fa-solid fa-sliders",
+        icon: SlidersHorizontal,
+        iconClassName: "fa-solid fa-sliders",
         title: "Comparação simples",
         text: "Filtre por aplicação, marca e faixa de preço para ganhar velocidade."
       },
       {
-        icon: "fa-solid fa-circle-check",
+        icon: CircleCheck,
+        iconClassName: "fa-solid fa-circle-check",
         title: "Compra mais segura",
         text: "Confirme a compatibilidade com atendimento consultivo antes de seguir."
       }
@@ -131,17 +162,20 @@ const categoryCommercialContent: Record<
       "Linha de apoio para elevar operação, atendimento e capacidade técnica com itens voltados para estrutura e produtividade do negócio.",
     highlights: [
       {
-        icon: "fa-solid fa-warehouse",
+        icon: Warehouse,
+        iconClassName: "fa-solid fa-warehouse",
         title: "Estrutura de oficina",
         text: "Produtos para apoiar montagem, operação e expansão do serviço."
       },
       {
-        icon: "fa-solid fa-handshake",
+        icon: Handshake,
+        iconClassName: "fa-solid fa-handshake",
         title: "Escolha comercial",
         text: "Avalie o que encaixa melhor no momento da oficina ou auto center."
       },
       {
-        icon: "fa-solid fa-arrow-up-right-dots",
+        icon: TrendingUp,
+        iconClassName: "fa-solid fa-arrow-up-right-dots",
         title: "Investimento certo",
         text: "Compare condições e priorize o equipamento com mais impacto na rotina."
       }
@@ -472,7 +506,7 @@ function CatalogExplorerContent({
                 <strong>Nenhum produto encontrado.</strong>
                 <span>Tente outro termo, marca, uso ou faixa de preço.</span>
                 <a className="btn btn-primary" href={whatsappDirectUrl()} target="_blank" rel="noopener noreferrer">
-                  <i className="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  <MessageCircle className="fa-brands fa-whatsapp" aria-hidden="true" focusable="false" />
                   {whatsappCtaLabel()}
                 </a>
               </div>
@@ -498,9 +532,9 @@ function CatalogExplorerContent({
         </div>
 
         <div className="catalog-commercial-highlights">
-          {commercialContent.highlights.map((highlight) => (
+          {commercialContent.highlights.map(({ icon: Icon, iconClassName, ...highlight }) => (
             <article className="catalog-commercial-card" key={highlight.title}>
-              <i className={highlight.icon} aria-hidden="true"></i>
+              <Icon className={iconClassName} aria-hidden="true" focusable="false" />
               <strong>{highlight.title}</strong>
               <p>{highlight.text}</p>
             </article>
