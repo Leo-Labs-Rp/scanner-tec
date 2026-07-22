@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   Check,
+  ChevronDown,
   CircleCheck,
   Clock3,
   Headset,
@@ -35,6 +36,7 @@ import {
 } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/format";
 import { optimizeSupabaseImageUrl, shouldUseUnoptimizedImage } from "@/lib/image";
+import { parseProductDetailContent } from "@/lib/product-detail-content";
 import {
   getProductApplications,
   getProductBenefits,
@@ -95,29 +97,27 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
     cart.map((item) => ({ id: item.id, quantity: item.quantity }))
   );
 
-  const detailParagraphs = useMemo(() => {
-    const unique = new Set<string>();
-
-    [product.detail, product.description]
-      .filter(Boolean)
-      .flatMap((text) => String(text).split(/\n+/))
-      .map((text) => text.trim())
-      .filter(Boolean)
-      .forEach((text) => unique.add(text));
-
-    return Array.from(unique);
-  }, [product.description, product.detail]);
+  const parsedDetail = useMemo(
+    () => parseProductDetailContent(product.detail || product.description),
+    [product.description, product.detail]
+  );
 
   const applicationPreview = useMemo(() => buildReadablePreview(applications), [applications]);
   const compatibilityPreview = useMemo(() => buildReadablePreview(compatibility, 150), [compatibility]);
 
-  const specEntries = Object.entries(product.specs || {}).filter(([, value]) => Boolean(value));
+  const specEntries = [
+    ...Object.entries(product.specs || {}).filter(([, value]) => Boolean(value)),
+    ...parsedDetail.technicalSpecs
+  ];
   const quickSpecs = specEntries.slice(0, 5);
   const productDisplayLine =
     product.fullName && product.fullName.trim() && product.fullName.trim() !== productName
       ? product.fullName.trim()
       : "";
-  const detailContent = detailParagraphs.filter((paragraph) => paragraph !== commercialSummary);
+  const descriptionIntro = parsedDetail.intro.filter((paragraph) => paragraph !== commercialSummary);
+  const hasCompleteDescription = Boolean(
+    descriptionIntro.length || parsedDetail.highlights.length || parsedDetail.functions.length
+  );
 
   function handlePrimaryAction(item: Product) {
     resetCheckoutError();
@@ -205,8 +205,6 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
             ))}
           </div>
 
-          <p className="product-page-summary">{commercialSummary}</p>
-
           <div className="price-row product-page-price">
             <strong>{formatCurrency(product.price)}</strong>
             {product.oldPrice ? <del>{formatCurrency(product.oldPrice)}</del> : null}
@@ -289,12 +287,50 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
 
       <section className="product-page-layout">
         <div className="product-page-content">
-          <article className="product-content-card">
-            <h2>Resumo comercial</h2>
+          <article className="product-content-card product-description-section" id="descricao">
+            <h2>Descrição</h2>
             <p className="product-content-lead">{commercialSummary}</p>
-            {detailContent.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+            {hasCompleteDescription ? (
+              <details className="product-description-details">
+                <summary>
+                  <span>Ver descrição completa</span>
+                  <ChevronDown aria-hidden="true" focusable="false" />
+                </summary>
+                <div className="product-description-expanded">
+                  {descriptionIntro.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+
+                  {parsedDetail.highlights.length ? (
+                    <div className="product-description-group">
+                      <h3>Destaques do equipamento</h3>
+                      <ul className="product-description-list">
+                        {parsedDetail.highlights.map((item) => (
+                          <li key={item}>
+                            <Check aria-hidden="true" focusable="false" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
+                  {parsedDetail.functions.length ? (
+                    <div className="product-description-group">
+                      <h3>Principais testes e funções</h3>
+                      <ul className="product-description-list">
+                        {parsedDetail.functions.map((item) => (
+                          <li key={item}>
+                            <Check aria-hidden="true" focusable="false" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </div>
+              </details>
+            ) : null}
           </article>
 
           <article className="product-content-card">
