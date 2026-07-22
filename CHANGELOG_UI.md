@@ -15,3 +15,11 @@ Branch: `feature/pdp-restructure`
 - O conteúdo longo usa `<details>` e `<summary>` nativos, permanecendo integralmente no HTML para SEO e navegação por teclado.
 - `Destaques do equipamento` e `Principais testes e funções` são interpretados do texto existente e renderizados como listas com check.
 - A ficha técnica deixou o accordion e foi preservada na tabela técnica existente, pronta para a consolidação do Item 3.
+
+## Item 3 - Especificações consolidadas
+
+- Os blocos separados de informações comerciais e especificações foram substituídos por uma única definição semântica (`dl`).
+- Nome, marca, categoria, grupo e categoria originais, usos, condições comercial e de pagamento, atendimento e ficha técnica aparecem em ordem única.
+- Aliases como `Fabricante`, `Marca` e `Marca ou linha` são deduplicados na apresentação.
+- Os chips rápidos passaram a priorizar os campos técnicos específicos extraídos da ficha existente.
+- Benefícios cadastrados foram incorporados ao accordion de descrição, removendo o bloco visual separado sem descartar conteúdo.

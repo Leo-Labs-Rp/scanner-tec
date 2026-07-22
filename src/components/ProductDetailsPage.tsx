@@ -39,7 +39,6 @@ import { optimizeSupabaseImageUrl, shouldUseUnoptimizedImage } from "@/lib/image
 import { parseProductDetailContent } from "@/lib/product-detail-content";
 import {
   getProductApplications,
-  getProductBenefits,
   getProductCommercialSummary,
   getProductCompatibility,
   getProductDisplayName,
@@ -68,6 +67,32 @@ function buildReadablePreview(text: string, max = 170) {
   return `${normalized.slice(0, max - 3).trimEnd()}...`;
 }
 
+const specLabelAliases: Record<string, string> = {
+  fabricante: "marca",
+  "marca ou linha": "marca",
+  "categoria principal": "categoria original"
+};
+
+function normalizeSpecLabel(label: string) {
+  const normalized = label
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+  return specLabelAliases[normalized] || normalized;
+}
+
+function uniqueSpecEntries(entries: Array<[string, string | undefined]>) {
+  const seen = new Set<string>();
+
+  return entries.filter(([label, value]) => {
+    const normalizedLabel = normalizeSpecLabel(label);
+    if (!value?.trim() || seen.has(normalizedLabel)) return false;
+    seen.add(normalizedLabel);
+    return true;
+  }) as Array<[string, string]>;
+}
+
 export default function ProductDetailsPage({ product, relatedProducts }: Props) {
   const productImages = Array.from(
     new Set(
@@ -81,7 +106,7 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
   const productName = getProductDisplayName(product);
   const commercialSummary = getProductCommercialSummary(product);
   const applications = getProductApplications(product);
-  const benefits = getProductBenefits(product);
+  const benefits = (product.benefits || []).filter(Boolean);
   const compatibility = getProductCompatibility(product);
   const priceOrCondition = getProductPriceOrCondition(product);
   const productTagsList = productTags(product);
@@ -105,18 +130,34 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
   const applicationPreview = useMemo(() => buildReadablePreview(applications), [applications]);
   const compatibilityPreview = useMemo(() => buildReadablePreview(compatibility, 150), [compatibility]);
 
-  const specEntries = [
-    ...Object.entries(product.specs || {}).filter(([, value]) => Boolean(value)),
+  const sourceSpecEntries = Object.entries(product.specs || {}).filter(([, value]) => Boolean(value));
+  const findSourceSpec = (label: string) =>
+    sourceSpecEntries.find(([currentLabel]) => normalizeSpecLabel(currentLabel) === normalizeSpecLabel(label))?.[1];
+  const specEntries = uniqueSpecEntries([
+    ["Nome do produto", productName],
+    ["Marca", productBrand(product)],
+    ["Categoria", formatCategoryLabel(product.category)],
+    ["SKU", product.sku],
+    ["Grupo original", findSourceSpec("Grupo original")],
+    ["Categoria original", findSourceSpec("Categoria principal")],
+    ["Usos", productTagsList.map(formatTagLabel).join(", ") || "Sob consulta"],
+    ["Condição comercial", product.stockStatus],
+    ["Condição de pagamento", product.paymentInfo || product.paymentNote || priceOrCondition],
+    ["Atendimento", businessHours],
+    ...sourceSpecEntries,
     ...parsedDetail.technicalSpecs
-  ];
-  const quickSpecs = specEntries.slice(0, 5);
+  ]);
+  const quickSpecs = uniqueSpecEntries([
+    ...parsedDetail.technicalSpecs.filter(([label]) => normalizeSpecLabel(label) !== "marca"),
+    ...sourceSpecEntries.filter(([label]) => !/observação|condição de pagamento/i.test(label))
+  ]).slice(0, 5);
   const productDisplayLine =
     product.fullName && product.fullName.trim() && product.fullName.trim() !== productName
       ? product.fullName.trim()
       : "";
   const descriptionIntro = parsedDetail.intro.filter((paragraph) => paragraph !== commercialSummary);
   const hasCompleteDescription = Boolean(
-    descriptionIntro.length || parsedDetail.highlights.length || parsedDetail.functions.length
+    descriptionIntro.length || parsedDetail.highlights.length || parsedDetail.functions.length || benefits.length
   );
 
   function handlePrimaryAction(item: Product) {
@@ -328,6 +369,20 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
                       </ul>
                     </div>
                   ) : null}
+
+                  {benefits.length ? (
+                    <div className="product-description-group">
+                      <h3>Benefícios para a oficina</h3>
+                      <ul className="product-description-list">
+                        {benefits.map((item) => (
+                          <li key={item}>
+                            <Check aria-hidden="true" focusable="false" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
                 </div>
               </details>
             ) : null}
@@ -347,70 +402,16 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
             </div>
           </article>
 
-          <article className="product-content-card">
-            <h2>Benefícios para a oficina</h2>
-            <div className="product-benefits-grid">
-              {benefits.map((benefit) => (
-                <span className="product-benefit-card" key={benefit}>
-                  <Check className="fa-solid fa-check" aria-hidden="true" focusable="false" />
-                  <span>{benefit}</span>
-                </span>
-              ))}
-            </div>
-          </article>
-
-          <article className="product-content-card">
-            <h2>Informações comerciais e técnicas</h2>
-            <div className="product-info-grid">
-              <span>
-                <strong>Nome do produto</strong>
-                {productName}
-              </span>
-              <span>
-                <strong>Categoria</strong>
-                {formatCategoryLabel(product.category)}
-              </span>
-              {product.sku ? (
-                <span>
-                  <strong>SKU</strong>
-                  {product.sku}
-                </span>
-              ) : null}
-              <span>
-                <strong>Marca ou linha</strong>
-                {productBrand(product)}
-              </span>
-              <span>
-                <strong>Atendimento</strong>
-                {businessHours}
-              </span>
-              <span>
-                <strong>Usos</strong>
-                {productTagsList.map(formatTagLabel).join(", ") || "Sob consulta"}
-              </span>
-              <span className="product-info-grid-wide">
-                <strong>Condição comercial</strong>
-                {priceOrCondition}
-              </span>
-            </div>
-          </article>
-
-          <article className="product-content-card">
+          <article className="product-content-card product-specifications-section" id="especificacoes">
             <h2>Especificações técnicas</h2>
-            {specEntries.length ? (
-              <div className="spec-table">
-                {specEntries.map(([label, value]) => (
-                  <span key={label}>
-                    <strong>{label}</strong>
-                    {value}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <p className="spec-placeholder">
-                Consulte a equipe ScannerTec para confirmar compatibilidade, itens inclusos e aplicação ideal.
-              </p>
-            )}
+            <dl className="product-specs-grid">
+              {specEntries.map(([label, value]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
           </article>
         </div>
 

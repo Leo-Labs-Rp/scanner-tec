@@ -870,6 +870,10 @@
     grid-template-columns: 1fr;
   }
 
+  .product-specs-grid {
+    grid-template-columns: 1fr;
+  }
+
   .product-service-strip span {
     min-height: 42px;
     padding: 8px 10px;
