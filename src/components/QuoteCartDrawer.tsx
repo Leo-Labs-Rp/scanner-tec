@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { CloseIcon, TrashIcon } from "@/components/SiteIcons";
 import { formatCurrency } from "@/lib/format";
-import { shouldUseUnoptimizedImage } from "@/lib/image";
+import { optimizeSupabaseImageUrl, shouldUseUnoptimizedImage } from "@/lib/image";
 import type { CartItem } from "@/types/product";
 
 type Props = {
@@ -52,16 +52,19 @@ export default function QuoteCartDrawer({
           </div>
         ) : (
           <ul className="cart-list drawer-list">
-            {cart.map((item) => (
-              <li key={item.id}>
-                <Image
-                  src={item.imageUrl}
-                  alt=""
-                  aria-hidden="true"
-                  width={56}
-                  height={56}
-                  unoptimized={shouldUseUnoptimizedImage(item.imageUrl)}
-                />
+            {cart.map((item) => {
+              const imageUrl = optimizeSupabaseImageUrl(item.imageUrl);
+
+              return (
+                <li key={item.id}>
+                  <Image
+                    src={imageUrl}
+                    alt=""
+                    aria-hidden="true"
+                    width={56}
+                    height={56}
+                    unoptimized={shouldUseUnoptimizedImage(imageUrl)}
+                  />
                 <span>
                   <strong>{item.name}</strong>
                   <small>
@@ -71,8 +74,9 @@ export default function QuoteCartDrawer({
                 <button type="button" onClick={() => onRemove(item.id)} aria-label={`Remover ${item.name}`}>
                   <TrashIcon />
                 </button>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         )}
 

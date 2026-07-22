@@ -33,7 +33,7 @@ import {
   whatsappDisplayNumber
 } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/format";
-import { shouldUseUnoptimizedImage } from "@/lib/image";
+import { optimizeSupabaseImageUrl, shouldUseUnoptimizedImage } from "@/lib/image";
 import {
   getProductApplications,
   getProductBenefits,
@@ -66,7 +66,14 @@ function buildReadablePreview(text: string, max = 170) {
 }
 
 export default function ProductDetailsPage({ product, relatedProducts }: Props) {
-  const initialImage = product.images?.[0] || product.imageUrl;
+  const productImages = Array.from(
+    new Set(
+      [...(product.images || []), product.imageUrl]
+        .filter(Boolean)
+        .map((imageUrl) => optimizeSupabaseImageUrl(imageUrl))
+    )
+  );
+  const initialImage = productImages[0] || optimizeSupabaseImageUrl(product.imageUrl);
   const productYoutubeUrl = product.youtubeUrl?.trim() || "";
   const productName = getProductDisplayName(product);
   const commercialSummary = getProductCommercialSummary(product);
@@ -103,7 +110,6 @@ export default function ProductDetailsPage({ product, relatedProducts }: Props) 
   const applicationPreview = useMemo(() => buildReadablePreview(applications), [applications]);
   const compatibilityPreview = useMemo(() => buildReadablePreview(compatibility, 150), [compatibility]);
 
-  const productImages = Array.from(new Set([...(product.images || []), product.imageUrl].filter(Boolean)));
   const specEntries = Object.entries(product.specs || {}).filter(([, value]) => Boolean(value));
   const productDisplayLine =
     product.fullName && product.fullName.trim() && product.fullName.trim() !== productName

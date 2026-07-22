@@ -9,7 +9,7 @@ import {
   primaryProductActionLabel
 } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/format";
-import { shouldUseUnoptimizedImage } from "@/lib/image";
+import { optimizeSupabaseImageUrl, shouldUseUnoptimizedImage } from "@/lib/image";
 import {
   getProductCommercialSummary,
   getProductDisplayName,
@@ -34,7 +34,8 @@ export default function ProductCard({
 }: Props) {
   const discount = discountPercent(product);
   const productName = getProductDisplayName(product);
-  const unoptimizedImage = shouldUseUnoptimizedImage(product.imageUrl);
+  const imageUrl = optimizeSupabaseImageUrl(product.imageUrl);
+  const unoptimizedImage = shouldUseUnoptimizedImage(imageUrl);
   const cardClassName = [
     "product-card",
     compact ? "compact" : "",
@@ -48,7 +49,7 @@ export default function ProductCard({
       <Link className="product-image" href={`/produto/${product.slug}`}>
         {discount ? <span className="discount-badge">{discount}% OFF</span> : null}
         <Image
-          src={product.imageUrl}
+          src={imageUrl}
           alt={getProductImageAlt(product)}
           fill
           sizes={compact ? "(max-width: 768px) 70vw, 220px" : "(max-width: 768px) 90vw, 280px"}

@@ -1,14 +1,20 @@
 import type { NextConfig } from "next";
 
-const supabaseStoragePattern = process.env.SUPABASE_URL
-  ? new URL("/storage/v1/object/public/**", process.env.SUPABASE_URL)
-  : null;
+const supabaseUrl = process.env.SUPABASE_URL ? new URL(process.env.SUPABASE_URL) : null;
+const supabaseStoragePatterns = supabaseUrl
+  ? ["/storage/v1/object/public/**", "/storage/v1/render/image/public/**"].map((pathname) => ({
+      protocol: supabaseUrl.protocol.replace(":", "") as "http" | "https",
+      hostname: supabaseUrl.hostname,
+      port: supabaseUrl.port,
+      pathname
+    }))
+  : [];
 
 const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24,
-    remotePatterns: supabaseStoragePattern ? [supabaseStoragePattern] : []
+    remotePatterns: supabaseStoragePatterns
   },
   async redirects() {
     return [

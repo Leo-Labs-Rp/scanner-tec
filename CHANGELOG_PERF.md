@@ -69,7 +69,25 @@ As classes historicas `fa-solid`, `fa-regular` e `fa-brands` foram preservadas n
 
 ## Fase 3 - Imagens do Supabase
 
-Status: pendente.
+Status: concluida.
+
+### Estrategia
+
+- A transformacao nativa do Supabase Storage foi validada primeiro em uma imagem publica real.
+- A URL de teste original, com 725.686 bytes, passou a responder com 340.013 bytes em `700x700`, `resize=contain` e qualidade 80.
+- As URLs persistidas no banco e o fluxo de upload administrativo nao foram alterados. A conversao acontece somente no `src` das imagens publicas de produto.
+- Cards, pagina de produto, visualizacao rapida e imagens do carrinho usam a rota `/storage/v1/render/image/public/` para arquivos publicos do Supabase.
+- Imagens locais, placeholders e banners mantem o comportamento anterior.
+- O `next.config.ts` aceita as rotas publica original e transformada sem restringir os parametros de transformacao.
+
+### Validacao
+
+- Build de producao e TypeScript aprovados.
+- Catalogo real do Supabase validado com 85 cards renderizados e 55 imagens apontando para a origem transformada.
+- Nenhuma imagem visivel quebrada e nenhum erro no console.
+- `alt`, `aria-hidden`, `sizes`, `data-nimg` e a geracao de `srcset` pelo `next/image` foram preservados.
+- Pagina de produto validada em 390 x 844 e 1440 x 900 pixels, sem sobreposicao ou overflow horizontal.
+- A imagem principal testada foi carregada pela transformacao de 700 pixels e entregue pelo otimizador do Next no tamanho adequado ao viewport.
 
 ## Fase 4 - JavaScript legado
 
